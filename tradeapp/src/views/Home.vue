@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-    <Chart/>
     <SearchBar/>
+    <Chart/>
   </div>
 </template>
 
@@ -18,3 +18,13 @@ export default {
   }
 };
 </script>
+
+<style>
+.home {
+  display: block;
+  background-color: darkgrey;
+  margin-left: 350px;
+  margin-right: 390px;
+}
+</style>
+

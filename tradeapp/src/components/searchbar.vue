@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="searchBar">
     <v-select :options="myOptions" v-model="selected"></v-select>
   </div>
 </template>
@@ -40,14 +40,22 @@ export default {
       this.$store.dispatch("RESET_DATA");
       axios
         .get(
-          `https://cloud.iexapis.com/stable/stock/${val}/chart/1m?token=pk_34cb74a42f4d4470ad6f93215427ba54`
+          `https://cloud.iexapis.com/stable/stock/${val}/chart/1d?token=pk_34cb74a42f4d4470ad6f93215427ba54`
         )
         .then(res => {
           console.log(res);
           this.prices.length = 0;
           for (let i = 0; i < res.data.length; i++) {
-            this.prices.push(res.data[i]["close"]);
-            this.dates.push(res.data[i]["date"]);
+            if (
+              res.data[i]["minute"] &&
+              res.data[i]["marketAverage"] !== null
+            ) {
+              this.dates.push(res.data[i]["label"]);
+              this.prices.push(res.data[i]["marketAverage"]);
+            } else {
+              this.dates.push(res.data[i]["date"]);
+              this.prices.push(res.data[i]["close"]);
+            }
           }
           this.$store.dispatch("ADD_PRICES", this.prices);
           this.$store.dispatch("ADD_DATES", this.dates);
@@ -57,5 +65,8 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.searchBar {
+  width: 700px;
+}
 </style>

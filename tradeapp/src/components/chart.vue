@@ -1,19 +1,23 @@
 <template>
-  <div style="height:600px; width:800px;">
-    <canvas id="myChart"></canvas>
-    <div>
-      <button @click="addValue()">Add value</button>
-      <button @click="updateChart()">Update chart</button>
-      <button @click="getPrices()">Get new prices</button>
-    </div>
+  <div>
+    <Card style="height: 500px; width: 700px; backgroundColor: aliceblue;">
+      <div>
+        <canvas id="myChart"></canvas>
+      </div>
+      <div></div>
+    </Card>
   </div>
 </template>
 
 <script>
 import Chart from "chart.js";
-import { setInterval } from "timers";
+import moment from "moment";
 export default {
   name: "Chart",
+  props: {
+    symbol: String,
+    period: String
+  },
   data() {
     return {
       chart: null
@@ -44,52 +48,79 @@ export default {
     createChart() {
       var ctx = document.getElementById("myChart").getContext("2d");
       this.chart = new Chart(ctx, {
-        // The type of chart we want to create
         type: "line",
-
-        // The data for our dataset
         data: {
           labels: this.labels,
           datasets: [
             {
-              label: "Stock X",
               backgroundColor: "transparent",
               borderColor: "rgb(19, 189, 137)",
+              borderWidth: 1.5,
               data: this.dataset
             }
           ]
         },
         // Configuration options go here
         options: {
+          legend: {
+            display: false
+          },
+          hover: {
+            intersect: false
+          },
+          responsive: true,
+          scales: {
+            xAxes: [
+              {
+                gridLines: {
+                  display: false
+                },
+                ticks: {
+                  display: false
+                }
+              }
+            ],
+            yAxes: [
+              {
+                gridLines: {
+                  display: false,
+                  drawBorder: false
+                },
+                ticks: {
+                  display: false
+                }
+              }
+            ]
+          },
           elements: {
             line: {
               tension: 0
             },
             point: {
+              backgroundColor: "rgba(19, 189, 137,0.8)",
               radius: 0,
-              hitRadius: 5,
-              backgroundColor: "rgb(19, 189, 137)",
-              borderColor: "rgb(19, 189, 137)"
+              hoverRadius: 3,
+              hitRadius: 2
             }
           },
           tooltips: {
-            mode: "nearest"
-          },
-          intersect: true
+            mode: "index",
+            intersect: false,
+            custom: function(tooltip) {
+              if (!tooltip) return;
+              tooltip.displayColors = false;
+            },
+            callbacks: {
+              label: function(tooltipItem, data) {
+                return "$" + tooltipItem.yLabel;
+              },
+              title: function(tooltipItem, data) {
+                return moment(tooltipItem.xLabel).format("MMM Do YY");
+              }
+            }
+          }
         }
       });
-    },
-    addValue() {
-      this.dataset.push(Math.random() * 100);
-      this.labels.push(Math.random() * 100);
-      this.chart.update();
-    },
-    updateChart() {
-      this.chart.update();
-    },
-    getPrices() {
-      console.log(this.$store.state.prices);
-      console.log(this.$store.state.dates);
     }
   }
 };
