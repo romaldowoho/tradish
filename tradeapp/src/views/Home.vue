@@ -23,8 +23,8 @@ export default {
 .home {
   display: block;
   background-color: darkgrey;
-  margin-left: 350px;
-  margin-right: 390px;
+  margin-left: 250px;
+  margin-right: 190px;
 }
 </style>
 

@@ -1,65 +1,58 @@
 <template>
   <div class="searchBar">
-    <v-select :options="myOptions" v-model="selected"></v-select>
+    <v-select label="searchLabel" :options="companies" v-model="selected"></v-select>
+    <div class="periods">
+      <a value="1d" class="link" @click="getPrices(selected, '1d', prices, dates)">1d</a>
+      <a value="1m" class="link" @click="getPrices(selected, '1m', prices, dates)">1m</a>
+      <a value="1y" class="link" @click="getPrices(selected, '1y', prices, dates)">1y</a>
+      <a value="5y" class="link" @click="getPrices(selected, '5y', prices, dates)">5y</a>
+    </div>
   </div>
 </template>
 
 <script>
-import axios from "axios";
 import Vue from "vue";
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
+import api from "../api/api.js";
+
 Vue.component("v-select", vSelect);
 export default {
   name: "searchBar",
   data() {
     return {
-      companies: null,
-      myOptions: [],
+      companies: [],
       prices: [],
       dates: [],
-      selected: null
+      selected: "Choose the stock",
+      period: "1m"
     };
   },
   mounted() {
-    axios
-      .get(
-        "https://cloud.iexapis.com/stable/ref-data/symbols?token=pk_34cb74a42f4d4470ad6f93215427ba54"
-      )
-      .then(res => {
-        for (let i = 0; i < res.data.length; i++) {
-          this.myOptions.push(res.data[i]["symbol"]);
-        }
-        this.companies = res.data;
-        //console.log("companies data: ", this.companies);
-      });
+    api.getSymbols(this.companies);
+    //console.log(this.companies);
   },
   watch: {
     selected: function(val) {
-      console.log("new value is: ", val);
+      if (val) {
+        this.$store.dispatch("RESET_DATA"); //resetting store data
+        this.getPrices(val, this.period, this.prices, this.dates);
+      }
+    }
+  },
+  methods: {
+    getPrices: function(company, period, pricesArray, datesArray) {
       this.$store.dispatch("RESET_DATA");
-      axios
-        .get(
-          `https://cloud.iexapis.com/stable/stock/${val}/chart/1d?token=pk_34cb74a42f4d4470ad6f93215427ba54`
-        )
-        .then(res => {
-          console.log(res);
-          this.prices.length = 0;
-          for (let i = 0; i < res.data.length; i++) {
-            if (
-              res.data[i]["minute"] &&
-              res.data[i]["marketAverage"] !== null
-            ) {
-              this.dates.push(res.data[i]["label"]);
-              this.prices.push(res.data[i]["marketAverage"]);
-            } else {
-              this.dates.push(res.data[i]["date"]);
-              this.prices.push(res.data[i]["close"]);
-            }
-          }
-          this.$store.dispatch("ADD_PRICES", this.prices);
-          this.$store.dispatch("ADD_DATES", this.dates);
-        });
+      this.prices = [];
+      this.dates = [];
+      [this.prices, this.dates] = api.getPrices(
+        company["symbol"],
+        period,
+        pricesArray,
+        datesArray
+      );
+      this.$store.dispatch("ADD_PRICES", this.prices);
+      this.$store.dispatch("ADD_DATES", this.dates);
     }
   }
 };
@@ -67,6 +60,15 @@ export default {
 
 <style scoped>
 .searchBar {
-  width: 700px;
+  width: 1000px;
+}
+.periods {
+  display: flex;
+  justify-content: left;
+  padding: 5px;
+}
+.link {
+  padding: 2px;
+  font-size: 2em;
 }
 </style>

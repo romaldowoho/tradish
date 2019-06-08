@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Card style="height: 500px; width: 700px; backgroundColor: aliceblue;">
+    <Card style="height: 500px; width: 1000px; backgroundColor: aliceblue;">
       <div>
         <canvas id="myChart"></canvas>
       </div>
@@ -113,9 +113,6 @@ export default {
             callbacks: {
               label: function(tooltipItem, data) {
                 return "$" + tooltipItem.yLabel;
-              },
-              title: function(tooltipItem, data) {
-                return moment(tooltipItem.xLabel).format("MMM Do YY");
               }
             }
           }
