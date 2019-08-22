@@ -40,6 +40,12 @@ const userSchema = mongoose.Schema(
     },
     salt: {
       type: String
+    },
+    balance: {
+      type: Number
+    },
+    portfolio: {
+      type: Array
     }
   },
   {

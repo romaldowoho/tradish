@@ -5,7 +5,9 @@ export default {
   getSymbols: function(arr) {
     axios
       .get(
-        "https://cloud.iexapis.com/stable/ref-data/symbols?token=pk_34cb74a42f4d4470ad6f93215427ba54"
+        `https://cloud.iexapis.com/stable/ref-data/symbols?token=${
+          process.env.IEX_PUBLIC
+        }`
       )
       .then(res => {
         for (let i = 0; i < res.data.length; i++) {
@@ -24,7 +26,9 @@ export default {
   getPrices: function(symbol, period, pricesArray, datesArray) {
     axios
       .get(
-        `https://cloud.iexapis.com/stable/stock/${symbol}/chart/${period}?token=pk_34cb74a42f4d4470ad6f93215427ba54`
+        `https://cloud.iexapis.com/stable/stock/${symbol}/chart/${period}?token=${
+          process.env.IEX_PUBLIC
+        }`
       )
       .then(res => {
         console.log(res);
