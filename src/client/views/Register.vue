@@ -4,29 +4,56 @@
       First Name:
       <Input v-model="fname" />
     </div>
+
     <div class="input">
       Last Name:
       <Input v-model="lname" />
     </div>
+
     <div class="input">
       Username:
       <Input v-model="username" />
     </div>
+
     <div class="input">
-      <div v-if="emailExists">
-        <Alert type="warning" show-icon closable v-on:on-close="emailStatus">
+      <div v-if="emailExistsWarning">
+        <Alert type="warning" show-icon closable>
           Email already exists
           <span slot="close">
             <a href="/login">Log In</a>
           </span>
         </Alert>
+      </div>
+      <div class="input">
+        <div v-if="emailFormatError">
+          <Alert
+            type="error"
+            show-icon
+            closable
+            v-on:on-close="resetEmailFormatError"
+          >Invalid email format</Alert>
+        </div>
       </div>Email:
       <Input v-model="email" />
     </div>
+
     <div class="input">
-      Password:
-      <Input v-model="password" />
+      <div v-if="passNoMatchError">
+        <Alert
+          type="error"
+          show-icon
+          closable
+          v-on:on-close="resetPassNoMatchError"
+        >Passwords do not match</Alert>
+      </div>Password:
+      <Input :icon="passMatch ? icon : null" v-model="pass1" />
     </div>
+
+    <div class="input">
+      Confirm password:
+      <Input :icon="passMatch ? icon : null" v-model="pass2" />
+    </div>
+
     <div class="button">
       <Button type="success" @click="handleSubmit">Sign Up</Button>
     </div>
@@ -42,19 +69,34 @@ export default {
       lname: "",
       username: "",
       email: "",
-      password: "",
-      emailExists: false
+      pass1: "",
+      pass2: "",
+      passMatch: false,
+      emailExistsWarning: false,
+      emailFormatError: false,
+      passNoMatchError: false,
+      icon: "ios-checkmark-circle-outline"
     };
   },
   methods: {
     handleSubmit() {
+      let errs = 0;
+      if (!this.validateEmail(this.email)) {
+        this.emailFormatError = true;
+        errs = 1;
+      }
+      if (!this.passMatch) {
+        this.passNoMatchError = true;
+        errs = 1;
+      }
+      if (errs) return;
       axios
         .post("http://localhost:3000/api/register", {
           firstName: this.fname,
           lastName: this.lname,
           username: this.username,
           email: this.email,
-          password: this.password
+          password: this.pass1
         })
         .then(() => {
           this.$router.push("email");
@@ -65,8 +107,37 @@ export default {
           }
         });
     },
-    emailStatus() {
-      this.emailExists = false;
+    resetEmailFormatError() {
+      this.emailFormatError = false;
+    },
+    resetPassNoMatchError() {
+      this.passNoMatchError = false;
+    },
+    validateEmail(email) {
+      let re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+      return re.test(String(email).toLowerCase());
+    }
+  },
+  watch: {
+    pass1: function() {
+      let pass1 = this.pass1.split(" ").join("");
+      let pass2 = this.pass2.split(" ").join("");
+      if (pass1 && pass2 && pass1 == pass2) {
+        this.passMatch = true;
+        this.passNoMatchError = false;
+      } else {
+        this.passMatch = false;
+      }
+    },
+    pass2: function() {
+      let pass1 = this.pass1.split(" ").join("");
+      let pass2 = this.pass2.split(" ").join("");
+      if (pass1 && pass2 && pass1 == pass2) {
+        this.passMatch = true;
+        this.passNoMatchError = false;
+      } else {
+        this.passMatch = false;
+      }
     }
   }
 };

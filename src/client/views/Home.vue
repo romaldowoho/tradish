@@ -1,14 +1,14 @@
 <template>
   <div class="home">
-    <SearchBar/>
-    <Chart/>
+    <SearchBar />
+    <Chart />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import Chart from "@/components/chart.vue";
-import SearchBar from "@/components/searchbar.vue";
+import Chart from "@/client/components/chart.vue";
+import SearchBar from "@/client/components/searchbar.vue";
 
 export default {
   name: "home",

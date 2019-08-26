@@ -1,13 +1,13 @@
 import axios from "axios";
 import moment from "moment";
+var env = require("env-variable")();
 
 export default {
+  TOKEN: env.IEX_PUBLIC,
   getSymbols: function(arr) {
     axios
       .get(
-        `https://cloud.iexapis.com/stable/ref-data/symbols?token=${
-          process.env.IEX_PUBLIC
-        }`
+        `https://cloud.iexapis.com/stable/ref-data/symbols?token=${this.TOKEN}`
       )
       .then(res => {
         for (let i = 0; i < res.data.length; i++) {
@@ -27,7 +27,7 @@ export default {
     axios
       .get(
         `https://cloud.iexapis.com/stable/stock/${symbol}/chart/${period}?token=${
-          process.env.IEX_PUBLIC
+          this.TOKEN
         }`
       )
       .then(res => {
