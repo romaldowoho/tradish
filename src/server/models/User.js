@@ -46,7 +46,8 @@ const userSchema = mongoose.Schema(
     },
     portfolio: {
       type: Array
-    }
+    },
+    transactions: Array
   },
   {
     timestamps: true

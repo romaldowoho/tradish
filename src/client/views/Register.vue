@@ -1,5 +1,14 @@
 <template>
-  <div>
+  <div class="wrap">
+    <div v-if="emptyFieldsError">
+      <Alert
+        type="error"
+        show-icon
+        closable
+        v-on:on-close="resetEmptyFieldsError"
+      >All fields are required</Alert>
+    </div>
+
     <div class="input">
       First Name:
       <Input v-model="fname" />
@@ -75,21 +84,26 @@ export default {
       emailExistsWarning: false,
       emailFormatError: false,
       passNoMatchError: false,
+      emptyFieldsError: false,
       icon: "ios-checkmark-circle-outline"
     };
   },
   methods: {
     handleSubmit() {
-      let errs = 0;
+      let err = 0;
       if (!this.validateEmail(this.email)) {
         this.emailFormatError = true;
-        errs = 1;
+        err = 1;
       }
       if (!this.passMatch) {
         this.passNoMatchError = true;
-        errs = 1;
+        err = 1;
       }
-      if (errs) return;
+      if (!this.fname || !this.lname || !this.username || !this.email) {
+        this.emptyFieldsError = true;
+        err = 1;
+      }
+      if (err) return;
       axios
         .post("http://localhost:3000/api/register", {
           firstName: this.fname,
@@ -103,7 +117,7 @@ export default {
         })
         .catch(err => {
           if (err.response.status === 409) {
-            this.emailExists = true;
+            this.emailExistsWarning = true;
           }
         });
     },
@@ -112,6 +126,9 @@ export default {
     },
     resetPassNoMatchError() {
       this.passNoMatchError = false;
+    },
+    resetEmptyFieldsError() {
+      this.emptyFieldsError = false;
     },
     validateEmail(email) {
       let re = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
@@ -144,6 +161,9 @@ export default {
 </script>
 
 <style scoped>
+.wrap {
+  display: block;
+}
 .input {
   width: 300px;
   margin: 0 auto;

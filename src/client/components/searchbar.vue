@@ -1,12 +1,6 @@
 <template>
   <div class="searchBar">
     <v-select label="searchLabel" :options="companies" v-model="selected"></v-select>
-    <div class="periods">
-      <a value="1d" class="link" @click="getPrices(selected, '1d', prices, dates)">1d</a>
-      <a value="1m" class="link" @click="getPrices(selected, '1m', prices, dates)">1m</a>
-      <a value="1y" class="link" @click="getPrices(selected, '1y', prices, dates)">1y</a>
-      <a value="5y" class="link" @click="getPrices(selected, '5y', prices, dates)">5y</a>
-    </div>
   </div>
 </template>
 
@@ -24,7 +18,7 @@ export default {
       companies: [],
       prices: [],
       dates: [],
-      selected: "Choose the stock",
+      selected: "Search",
       period: "1m"
     };
   },
@@ -46,13 +40,14 @@ export default {
       this.prices = [];
       this.dates = [];
       [this.prices, this.dates] = api.getPrices(
-        company["symbol"],
+        company.symbol,
         period,
         pricesArray,
         datesArray
       );
       this.$store.dispatch("ADD_PRICES", this.prices);
       this.$store.dispatch("ADD_DATES", this.dates);
+      this.$store.dispatch("ADD_SYMBOL", this.selected.symbol);
     }
   }
 };
@@ -61,11 +56,6 @@ export default {
 <style scoped>
 .searchBar {
   width: 1000px;
-}
-.periods {
-  display: flex;
-  justify-content: left;
-  padding: 5px;
 }
 .link {
   padding: 2px;

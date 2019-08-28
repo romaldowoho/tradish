@@ -46,5 +46,5 @@ module.exports.confirm = async (ctx, next) => {
 
   const token = uuid();
 
-  ctx.body = { token };
+  ctx.redirect("http://localhost:8080/dashboard");
 };

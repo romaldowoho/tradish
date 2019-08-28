@@ -1,8 +1,5 @@
 <template>
-  <div class="home">
-    <SearchBar />
-    <Chart />
-  </div>
+  <div class="home"></div>
 </template>
 
 <script>

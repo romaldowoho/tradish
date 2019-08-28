@@ -28,5 +28,8 @@ module.exports = {
   mailer: {
     user: process.env.MAIL_USER,
     password: process.env.MAIL_PASS
+  },
+  IEX: {
+    public_token: "pk_34cb74a42f4d4470ad6f93215427ba54"
   }
 };

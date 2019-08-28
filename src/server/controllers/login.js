@@ -5,7 +5,6 @@ module.exports = async function login(ctx, next) {
     if (err) throw err;
     console.log(info);
     if (!user) {
-      console.log("USER WAS NOT FOUND");
       ctx.status = 400;
       ctx.body = { error: info };
       return;

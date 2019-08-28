@@ -1,10 +1,17 @@
 <template>
-  <div>
-    <Card style="height: 500px; width: 1000px; backgroundColor: aliceblue;">
+  <div class="wrap">
+    <div v-if="main" class="stock-info">
+      <span class="symbol">
+        <h1>{{this.$store.getters.GET_SYMBOL}}</h1>
+      </span>
+      <span class="price">
+        <h1>{{dataset[dataset.length - 1]}}</h1>
+      </span>
+    </div>
+    <Card style="height: 300px; width: 600px; backgroundColor: rgb(37, 39, 46);">
       <div>
         <canvas id="myChart"></canvas>
       </div>
-      <div></div>
     </Card>
   </div>
 </template>
@@ -15,8 +22,7 @@ import moment from "moment";
 export default {
   name: "Chart",
   props: {
-    symbol: String,
-    period: String
+    main: Boolean
   },
   data() {
     return {
@@ -123,5 +129,15 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.wrap {
+  display: block;
+}
+.stock-info {
+  display: flex;
+}
+.symbol {
+  text-align: left;
+  padding-left: 5px;
+}
 </style>

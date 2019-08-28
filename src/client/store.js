@@ -5,6 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    symbol: "",
     prices: [],
     dates: []
   },
@@ -14,6 +15,9 @@ export default new Vuex.Store({
     },
     GET_DATES: state => {
       return state.dates;
+    },
+    GET_SYMBOL: state => {
+      return state.symbol;
     }
   },
   mutations: {
@@ -23,7 +27,11 @@ export default new Vuex.Store({
     ADD_DATES: (state, payload) => {
       state.dates = payload;
     },
+    ADD_SYMBOL: (state, payload) => {
+      state.symbol = payload;
+    },
     RESET_DATA: state => {
+      state.symbol = "";
       state.prices.length = 0;
       state.dates.length = 0;
     }
@@ -34,6 +42,9 @@ export default new Vuex.Store({
     },
     ADD_DATES: (context, payload) => {
       context.commit("ADD_DATES", payload);
+    },
+    ADD_SYMBOL: (context, payload) => {
+      context.commit("ADD_SYMBOL", payload);
     },
     RESET_DATA: context => {
       context.commit("RESET_DATA");
