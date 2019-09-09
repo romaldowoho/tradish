@@ -1,13 +1,18 @@
 <template>
   <div>
     <div class="wrap">
-      <div class="logo">Tradish</div>
-      <div class="search">
-        <searchBar v-if="['login','register'].indexOf($route.name) === -1" />
+      <div class="logo" @click="goHome">
+        <img class="image" src="./../../../public/tradish.png" />
       </div>
-      <div class="links-div">
-        <router-link class="link a" to="/login">Log in</router-link>
-        <router-link class="link a" to="/register">Sign up</router-link>
+      <div class="search">
+        <searchBar v-if="['login','register','email','confirmed'].indexOf($route.name) === -1 " />
+      </div>
+      <div class="links-div" v-if="!this.$cookie.get('tradish-session')">
+        <router-link class="link" to="/login">Log in</router-link>
+        <router-link class="link" to="/register">Sign up</router-link>
+      </div>
+      <div class="links-div" v-if="this.$cookie.get('tradish-session')">
+        <router-link class="link" to @click.native="logout">Log out</router-link>
       </div>
     </div>
   </div>
@@ -15,10 +20,41 @@
 
 <script>
 import searchBar from "./searchbar";
+import axios from "axios";
 export default {
   name: "navbar",
   components: {
     searchBar
+  },
+  data() {
+    return {};
+  },
+  beforeMount() {
+    if (this.$cookie.get("tradish-session")) {
+      this.isLoggedIn = true;
+    }
+  },
+  methods: {
+    goHome() {
+      this.$router.push({ name: "home" });
+    },
+    logout() {
+      let token = this.$cookie.get("tradish-session");
+      this.$cookie.delete("tradish-session");
+
+      axios
+        .post("http://localhost:3000/api/logout", {
+          token: token
+        })
+        .then(res => {
+          if (res.status == 200) {
+            this.$router.push({ name: "login" });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   }
 };
 </script>
@@ -36,6 +72,7 @@ export default {
   left: 5%;
   display: flex;
   width: 25%;
+  padding-bottom: 3 px;
 }
 .search {
   display: flex;
@@ -52,7 +89,13 @@ export default {
   margin-left: 3px;
   font-size: 15px;
 }
-a:hover {
-  color: red;
+.image {
+  padding: 0;
+  padding-bottom: 0;
+  width: 170px;
+  height: 40px;
+}
+.image:hover {
+  cursor: pointer;
 }
 </style>

@@ -13,11 +13,11 @@ module.exports = new LocalStrategy(
       const isValidPassword = await user.checkPassword(password);
 
       if (!isValidPassword) {
-        return done(null, false, "Invalid password");
+        return done(null, false, "Email and password do not match");
       }
 
       if (user.verificationToken) {
-        return done(null, false, "Please confirm email");
+        return done(null, false, "Please confirm your email");
       }
 
       return done(null, user);

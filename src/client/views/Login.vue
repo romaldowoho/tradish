@@ -2,12 +2,7 @@
   <div>
     <div class="input">
       <div v-if="validationErr">
-        <Alert
-          type="error"
-          show-icon
-          closable
-          v-on:on-close="removeErr"
-        >Email and password do not match</Alert>
+        <Alert type="error" show-icon closable v-on:on-close="removeErr">{{ errMessage }}</Alert>
       </div>
     </div>
     <div class="input">
@@ -31,8 +26,14 @@ export default {
     return {
       email: "",
       password: "",
+      errMessage: "",
       validationErr: false
     };
+  },
+  beforeCreate() {
+    if (this.$cookie.get("tradish-session")) {
+      this.$router.push("dashboard");
+    }
   },
   methods: {
     handleSubmit() {
@@ -43,12 +44,17 @@ export default {
         })
         .then(res => {
           if (res.status == 200) {
-            this.$router.push("about");
+            const user = res.data.userInfo;
+            const token = user.token;
+            this.$store.dispatch("SET_USER", user);
+            this.$cookie.set("tradish-session", token, 365);
+            this.$router.push("dashboard");
           }
         })
         .catch(err => {
-          console.log(err);
+          this.errMessage = err.response.data.error;
           this.validationErr = true;
+          console.log(err);
         });
     },
     removeErr() {

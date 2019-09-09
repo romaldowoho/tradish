@@ -1,6 +1,8 @@
 <template>
   <div class="searchBar">
-    <v-select label="searchLabel" :options="companies" v-model="selected"></v-select>
+    <Card :bordered="false" :padding="0">
+      <v-select class="selector" label="searchLabel" :options="companies" v-model="selected"></v-select>
+    </Card>
   </div>
 </template>
 
@@ -8,7 +10,8 @@
 import Vue from "vue";
 import vSelect from "vue-select";
 import "vue-select/dist/vue-select.css";
-import api from "../api/api.js";
+import IEX from "../api/IEX";
+import { setTimeout } from "timers";
 
 Vue.component("v-select", vSelect);
 export default {
@@ -16,38 +19,18 @@ export default {
   data() {
     return {
       companies: [],
-      prices: [],
-      dates: [],
-      selected: "Search",
-      period: "1m"
+      selected: "Search"
     };
   },
-  mounted() {
-    api.getSymbols(this.companies);
-    //console.log(this.companies);
+  beforeMount() {
+    this.companies = IEX.getSymbols();
   },
   watch: {
     selected: function(val) {
-      if (val) {
-        this.$store.dispatch("RESET_DATA"); //resetting store data
-        this.getPrices(val, this.period, this.prices, this.dates);
+      if (val && val !== "Search") {
+        this.selected = "Search";
+        this.$router.push(`/stocks/${val.symbol}`, () => {}, err => {});
       }
-    }
-  },
-  methods: {
-    getPrices: function(company, period, pricesArray, datesArray) {
-      this.$store.dispatch("RESET_DATA");
-      this.prices = [];
-      this.dates = [];
-      [this.prices, this.dates] = api.getPrices(
-        company.symbol,
-        period,
-        pricesArray,
-        datesArray
-      );
-      this.$store.dispatch("ADD_PRICES", this.prices);
-      this.$store.dispatch("ADD_DATES", this.dates);
-      this.$store.dispatch("ADD_SYMBOL", this.selected.symbol);
     }
   }
 };
@@ -57,8 +40,9 @@ export default {
 .searchBar {
   width: 1000px;
 }
-.link {
-  padding: 2px;
-  font-size: 2em;
+.selector .vs__search::placeholder,
+.selector .vs__dropdown-toggle,
+.selector .vs__dropdown-menu {
+  border: none;
 }
 </style>

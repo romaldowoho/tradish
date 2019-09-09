@@ -9,9 +9,15 @@
 
 <script>
 import Navbar from "./components/navbar";
+import DB from "./api/DB";
 export default {
   components: {
     Navbar
+  },
+  beforeUpdate() {
+    if (this.$cookie.get("tradish-session")) {
+      DB.getUserInfo(this);
+    }
   }
 };
 </script>

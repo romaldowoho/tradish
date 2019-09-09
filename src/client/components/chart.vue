@@ -1,11 +1,11 @@
 <template>
   <div class="wrap">
-    <div v-if="main" class="stock-info">
+    <div class="stock-info">
       <span class="symbol">
-        <h1>{{this.$store.getters.GET_SYMBOL}}</h1>
+        <h1>{{symbol}}</h1>
       </span>
       <span class="price">
-        <h1>{{dataset[dataset.length - 1]}}</h1>
+        <h1>${{lastPrice}}</h1>
       </span>
     </div>
     <Card style="height: 300px; width: 600px; backgroundColor: rgb(37, 39, 46);">
@@ -13,56 +13,83 @@
         <canvas id="myChart"></canvas>
       </div>
     </Card>
+    <div class="periods">
+      <a value="1d" class="link" @click="getChartData(symbol, '1d')">1d</a>
+      <a value="1m" class="link" @click="getChartData(symbol, '1m')">1m</a>
+      <a value="1y" class="link" @click="getChartData(symbol, '1y')">1y</a>
+      <a value="5y" class="link" @click="getChartData(symbol, '5y')">5y</a>
+    </div>
   </div>
 </template>
 
 <script>
 import Chart from "chart.js";
 import moment from "moment";
+import IEX from "./../api/IEX";
 export default {
-  name: "Chart",
+  name: "chart",
   props: {
-    main: Boolean
+    symbol: {
+      type: String,
+      required: false
+    }
   },
   data() {
     return {
-      chart: null
+      chart: null,
+      chartPrices: [],
+      chartDates: []
     };
+  },
+  computed: {
+    lastPrice() {
+      let len = this.chartPrices.length;
+      return this.chartPrices[len - 1];
+    }
+  },
+  watch: {
+    chartPrices: function(val) {
+      this.chart.data.datasets[0].data = val;
+      this.chart.update();
+      this.emitTerminalInfo();
+    },
+    chartDates: function(val) {
+      this.chart.data.labels = val;
+      this.chart.update();
+    },
+    symbol: function(val) {
+      this.getChartData(val, "1m");
+    }
+  },
+  beforeMount: function() {
+    this.getChartData(this.symbol, "1m");
   },
   mounted: function() {
     this.createChart();
   },
-  computed: {
-    dataset() {
-      return this.$store.getters.GET_PRICES;
-    },
-    labels() {
-      return this.$store.getters.GET_DATES;
-    }
-  },
-  watch: {
-    dataset(newData, oldData) {
-      this.chart.data.datasets[0].data = newData;
-      this.chart.update();
-    },
-    labels(newData, oldData) {
-      this.chart.data.labels = newData;
-      this.chart.update();
-    }
-  },
   methods: {
+    getChartData(symbol, period) {
+      [this.chartPrices, this.chartDates] = IEX.getChartData(symbol, period);
+    },
+    emitTerminalInfo() {
+      let info = {
+        symbol: this.symbol,
+        price: this.lastPrice
+      };
+      this.$emit("terminalInfo", info);
+    },
     createChart() {
       var ctx = document.getElementById("myChart").getContext("2d");
       this.chart = new Chart(ctx, {
         type: "line",
         data: {
-          labels: this.labels,
+          labels: this.chartDates,
           datasets: [
             {
               backgroundColor: "transparent",
               borderColor: "rgb(19, 189, 137)",
               borderWidth: 1.5,
-              data: this.dataset
+              data: this.chartPrices
             }
           ]
         },
@@ -135,9 +162,24 @@ export default {
 }
 .stock-info {
   display: flex;
+  justify-content: space-between;
 }
-.symbol {
-  text-align: left;
-  padding-left: 5px;
+.periods {
+  position: relative;
+  display: flex;
+  justify-content: left;
+  padding-top: 5px;
+}
+.link {
+  padding-right: 5px;
+  font-size: 15px;
+  font-weight: bold;
+  color: rgb(37, 39, 46);
+}
+.link:active {
+  color: rgba(19, 189, 137, 0.8);
+}
+:link {
+  color: rgba(19, 189, 137, 0.8);
 }
 </style>

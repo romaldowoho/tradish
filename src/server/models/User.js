@@ -47,6 +47,12 @@ const userSchema = mongoose.Schema(
     portfolio: {
       type: Array
     },
+    portfolioValue: {
+      type: Number
+    },
+    watchlist: {
+      type: Array
+    },
     transactions: Array
   },
   {

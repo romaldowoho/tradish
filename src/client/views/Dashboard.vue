@@ -2,23 +2,19 @@
   <div class="wrap">
     <h1>Welcome to your dashboard</h1>
     <div class="chart">
-      <Chart main="true" />
-    </div>
-    <div class="periods">
-      <a value="1d" class="link" @click="getPrices(symbol, '1d', prices, dates)">1d</a>
-      <a value="1m" class="link" @click="getPrices(symbol, '1m', prices, dates)">1m</a>
-      <a value="1y" class="link" @click="getPrices(symbol, '1y', prices, dates)">1y</a>
-      <a value="5y" class="link" @click="getPrices(symbol, '5y', prices, dates)">5y</a>
+      <Chart symbol="RUN" />
+      <!-- <ChartSmall :symbol="'RUN'" /> -->
     </div>
   </div>
 </template>
 
 <script>
 import Chart from "./../components/chart";
-import api from "./../api/api.js";
+import ChartSmall from "./../components/chartSmall";
 export default {
   components: {
-    Chart
+    Chart,
+    ChartSmall
   },
   // data() {
   //   return {
@@ -29,35 +25,25 @@ export default {
   // },
   computed: {
     symbol: function() {
-      return this.$store.getters.GET_SYMBOL;
+      return this.$store.getters.GET_CHART_SYMBOL;
     },
     prices: function() {
-      return this.$store.getters.GET_PRICES;
+      return this.$store.getters.GET_CHART_PRICES;
     },
     dates: function() {
-      return this.$store.getters.GET_DATES;
+      return this.$store.getters.GET_CHART_DATES;
     }
-  },
-  methods: {
-    getPrices: api.getPrices
   }
 };
 </script>
 
 <style scoped>
 .wrap {
-  padding-top: 5%;
+  /* padding-top: 5%; */
 }
 .chart {
   padding-top: 3%;
   position: relative;
-  left: 30%;
-}
-.periods {
-  position: relative;
-  left: 30%;
-  display: flex;
-  justify-content: left;
-  padding: 5px;
+  left: 10%;
 }
 </style>

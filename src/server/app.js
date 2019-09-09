@@ -5,6 +5,10 @@ const cors = require("@koa/cors");
 const Session = require("./models/Session");
 const registration = require("./controllers/register");
 const login = require("./controllers/login");
+const logout = require("./controllers/logout");
+const getUser = require("./controllers/getUser");
+const orders = require("./controllers/orders");
+const mustBeAuthenticated = require("./libs/mustBeAuthenticated");
 const handleMongooseValidationError = require("./libs/validationErrors");
 
 const app = new Koa();
@@ -36,6 +40,12 @@ app.use((ctx, next) => {
     return token;
   };
 
+  ctx.logout = async function logout(token) {
+    await Session.deleteOne({ token }, err => {
+      console.log(err);
+    });
+  };
+
   return next();
 });
 
@@ -56,12 +66,19 @@ router.use(async (ctx, next) => {
   await session.save();
 
   ctx.user = session.user;
+
   return next();
 });
 
 router.post("/login", handleMongooseValidationError, login);
+router.post("/logout", handleMongooseValidationError, logout);
 router.post("/register", handleMongooseValidationError, registration.register);
 router.get("/confirm*", registration.confirm);
+
+// protected routes
+router.get("/getUser", mustBeAuthenticated, getUser);
+router.get("/buyOrder", mustBeAuthenticated, orders.buy);
+router.get("/sellOrder", mustBeAuthenticated, orders.sell);
 
 app.use(router.routes());
 

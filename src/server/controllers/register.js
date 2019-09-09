@@ -5,6 +5,7 @@ const sendMail = require("../libs/sendMail");
 module.exports.register = async (ctx, next) => {
   const verificationToken = uuid();
   let user = await User.findOne({ email: ctx.request.body.email });
+  console.log(user);
   if (user) {
     ctx.body = { status: "Email already exists" };
     ctx.status = 409;
@@ -46,5 +47,5 @@ module.exports.confirm = async (ctx, next) => {
 
   const token = uuid();
 
-  ctx.redirect("http://localhost:8080/dashboard");
+  ctx.redirect("http://localhost:8080/confirmed");
 };
