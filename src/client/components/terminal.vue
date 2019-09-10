@@ -4,6 +4,7 @@
       <!-- <p slot="title">Buy {{info.symbol}}</p> -->
       <p slot="title" class="title">
         <Tabs :animated="false" v-model="activeTab" :capture-focus="true">
+          <eyeButton v-if="!readyToOrder && !ownShare" slot="extra" :symbol="this.info.symbol" />
           <TabPane
             v-if="!readyToOrder"
             :label="tabBuyLabel"
@@ -56,7 +57,11 @@
 <script>
 import axios from "axios";
 import DB from "./../api/DB";
+import eyeButton from "./../components/button-watchlist";
 export default {
+  components: {
+    eyeButton
+  },
   name: "Terminal",
   props: {
     info: {
@@ -68,11 +73,19 @@ export default {
     return {
       totalShares: 0,
       readyToOrder: false,
-      activeTab: "Buy"
+      activeTab: "Buy",
+      eyeColor: ""
     };
   },
   beforeMount() {},
   methods: {
+    temp() {
+      if (this.eyeColor) {
+        this.eyeColor = "";
+      } else {
+        this.eyeColor = "green";
+      }
+    },
     orderReview() {
       if (this.totalShares > 0 && this.totalShares % 1 == 0) {
         this.readyToOrder = true;

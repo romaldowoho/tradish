@@ -66,5 +66,22 @@ export default {
       .catch(err => {
         console.log({ err });
       });
+  },
+  handleWatchlist: function(ctx, symbol, action) {
+    axios
+      .post("http://localhost:3000/api/handleWatchlist", {
+        Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
+        symbol,
+        action
+      })
+      .then(res => {
+        if (res.status == 200) {
+          const user = res.data.userInfo;
+          ctx.$store.dispatch("SET_USER", user);
+        }
+      })
+      .catch(err => {
+        console.log({ err });
+      });
   }
 };
