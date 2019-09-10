@@ -16,13 +16,6 @@ export default {
     Chart,
     ChartSmall
   },
-  // data() {
-  //   return {
-  //     symbol: this.$store.getters.GET_SYMBOL,
-  //     prices: this.$store.getters.GET_PRICES,
-  //     dates: this.$store.getters.GET_DATES
-  //   };
-  // },
   computed: {
     symbol: function() {
       return this.$store.getters.GET_CHART_SYMBOL;

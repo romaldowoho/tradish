@@ -16,11 +16,12 @@ getUserInfo = function(user) {
 module.exports.buy = async function(ctx, next) {
   let user = ctx.user;
   let newStock = {
-    symbol: ctx.request.header.symbol,
-    quantity: parseInt(ctx.request.header.quantity)
+    symbol: ctx.request.body.symbol,
+    quantity: parseInt(ctx.request.body.quantity)
   };
+  console.log("body   ", ctx.request.body);
   //check if already owns shares and update portfolio
-  if (ctx.request.header.doesown === "true") {
+  if (ctx.request.body.doesOwn) {
     for (let i = 0; i < user.portfolio.length; i++) {
       if (user.portfolio[i].symbol == newStock.symbol) {
         user.portfolio[i].quantity += newStock.quantity;
@@ -33,8 +34,8 @@ module.exports.buy = async function(ctx, next) {
   }
 
   //update balance
-  console.log("total cost: ", ctx.request.header.totalcost);
-  user.balance -= parseFloat(ctx.request.header.totalcost);
+  console.log("total cost: ", ctx.request.body.totalCost);
+  user.balance -= parseFloat(ctx.request.body.totalCost);
 
   //add transaction
   let transaction = {
@@ -42,8 +43,8 @@ module.exports.buy = async function(ctx, next) {
     type: "buy",
     symbol: newStock.symbol,
     quantity: newStock.quantity,
-    shareCost: (ctx.request.header.totalcost / newStock.quantity).toFixed(2),
-    totalCost: ctx.request.header.totalcost,
+    shareCost: (ctx.request.body.totalCost / newStock.quantity).toFixed(2),
+    totalCost: ctx.request.body.totalCost,
     currBalance: user.balance
   };
   user.transactions.push(transaction);
@@ -57,9 +58,9 @@ module.exports.buy = async function(ctx, next) {
 
 module.exports.sell = async function(ctx, next) {
   let user = ctx.user;
-  let symbol = ctx.request.header.symbol;
-  let quantity = parseInt(ctx.request.header.quantity);
-  console.log("quantity:     ", quantity);
+  let symbol = ctx.request.body.symbol;
+  let quantity = parseInt(ctx.request.body.quantity);
+
   // find and update portfolio
   for (let i = 0; i < user.portfolio.length; i++) {
     if (user.portfolio[i].symbol == symbol) {
@@ -74,7 +75,7 @@ module.exports.sell = async function(ctx, next) {
     }
   }
   // update balance
-  user.balance += parseFloat(ctx.request.header.totalcost);
+  user.balance += parseFloat(ctx.request.body.totalCost);
 
   //add transaction
   let transaction = {
@@ -82,8 +83,8 @@ module.exports.sell = async function(ctx, next) {
     type: "sell",
     symbol: symbol,
     quantity: quantity,
-    shareCost: (ctx.request.header.totalcost / quantity).toFixed(2),
-    totalCost: ctx.request.header.totalcost,
+    shareCost: (ctx.request.body.totalCost / quantity).toFixed(2),
+    totalCost: ctx.request.body.totalCost,
     currBalance: user.balance
   };
   user.transactions.push(transaction);

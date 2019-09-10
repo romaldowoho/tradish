@@ -85,7 +85,6 @@ export default {
       this.totalShares = 0;
     },
     orderPlace() {
-      console.log("active tab:   ", this.activeTab);
       if (this.activeTab === "Buy") {
         if (this.user.balance >= this.totalCost) {
           DB.buyShares(
@@ -155,17 +154,11 @@ export default {
     }
   },
   watch: {
-    activeTab: function(val) {
-      console.log(val);
-    },
     $route: function() {
       this.readyToOrder = false;
       this.totalShares = 0;
       this.activeTab = "Buy";
     }
-    // totalShares: function(val) {
-    //   this.totalShares = Math.max(Math.floor(val), 0);
-    // }
   }
 };
 </script>

@@ -52,7 +52,10 @@ app.use((ctx, next) => {
 const router = new Router({ prefix: "/api" });
 
 router.use(async (ctx, next) => {
-  const header = ctx.request.get("Authorization");
+  const header =
+    ctx.request.method === "GET"
+      ? ctx.request.get("Authorization")
+      : ctx.request.body.Authorization;
   if (!header) return next();
 
   const token = header.split(" ")[1];
@@ -77,8 +80,8 @@ router.get("/confirm*", registration.confirm);
 
 // protected routes
 router.get("/getUser", mustBeAuthenticated, getUser);
-router.get("/buyOrder", mustBeAuthenticated, orders.buy);
-router.get("/sellOrder", mustBeAuthenticated, orders.sell);
+router.post("/buyOrder", mustBeAuthenticated, orders.buy);
+router.post("/sellOrder", mustBeAuthenticated, orders.sell);
 
 app.use(router.routes());
 

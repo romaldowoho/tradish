@@ -20,14 +20,12 @@ export default {
   },
   buyShares: function(ctx, symbol, quantity, totalCost, doesOwn) {
     axios
-      .get("http://localhost:3000/api/buyOrder", {
-        headers: {
-          Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
-          symbol,
-          quantity,
-          totalCost,
-          doesOwn
-        }
+      .post("http://localhost:3000/api/buyOrder", {
+        Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
+        symbol,
+        quantity,
+        totalCost,
+        doesOwn
       })
       .then(res => {
         if (res.status == 200) {
@@ -41,13 +39,11 @@ export default {
   },
   sellShares: function(ctx, symbol, quantity, totalCost) {
     axios
-      .get("http://localhost:3000/api/sellOrder", {
-        headers: {
-          Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
-          symbol,
-          quantity,
-          totalCost
-        }
+      .post("http://localhost:3000/api/sellOrder", {
+        Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
+        symbol,
+        quantity,
+        totalCost
       })
       .then(res => {
         if (res.status == 200) {
