@@ -19,6 +19,9 @@ export default {
       });
   },
   buyShares: function(ctx, symbol, quantity, totalCost, doesOwn) {
+    // loading bar start
+    ctx.$Loading.start();
+    ///////////////////////////
     axios
       .post("http://localhost:3000/api/buyOrder", {
         Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
@@ -29,8 +32,11 @@ export default {
       })
       .then(res => {
         if (res.status == 200) {
-          const user = res.data.userInfo;
-          ctx.$store.dispatch("SET_USER", user);
+          setTimeout(() => {
+            const user = res.data.userInfo;
+            ctx.$store.dispatch("SET_USER", user);
+            ctx.$Loading.finish();
+          }, 2000);
         }
       })
       .catch(err => {
@@ -38,6 +44,9 @@ export default {
       });
   },
   sellShares: function(ctx, symbol, quantity, totalCost) {
+    // loading bar start
+    ctx.$Loading.start();
+    ///////////////////////////
     axios
       .post("http://localhost:3000/api/sellOrder", {
         Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
@@ -47,8 +56,11 @@ export default {
       })
       .then(res => {
         if (res.status == 200) {
-          const user = res.data.userInfo;
-          ctx.$store.dispatch("SET_USER", user);
+          setTimeout(() => {
+            const user = res.data.userInfo;
+            ctx.$store.dispatch("SET_USER", user);
+            ctx.$Loading.finish();
+          }, 2000);
         }
       })
       .catch(err => {
