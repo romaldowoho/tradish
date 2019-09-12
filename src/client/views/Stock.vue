@@ -24,7 +24,6 @@ export default {
   },
   computed: {
     symbol() {
-      console.log("New symbol", this.$route.params.symbol);
       return this.$route.params.symbol;
     }
   },

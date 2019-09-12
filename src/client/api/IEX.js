@@ -1,5 +1,5 @@
 import axios from "axios";
-import moment from "moment";
+import moment from "moment-timezone";
 import config from "../../../config";
 
 export default {
@@ -7,7 +7,7 @@ export default {
     const symbols = [];
     axios
       .get(
-        `https://cloud.iexapis.com/stable/ref-data/symbols?token=${
+        `https://sandbox.iexapis.com/stable/ref-data/symbols?token=${
           config.IEX.public_token
         }`
       )
@@ -31,7 +31,7 @@ export default {
     const datesArray = [];
     axios
       .get(
-        `https://cloud.iexapis.com/stable/stock/${symbol}/chart/${period}?token=${
+        `https://sandbox.iexapis.com/stable/stock/${symbol}/chart/${period}?token=${
           config.IEX.public_token
         }`
       )
@@ -51,5 +51,25 @@ export default {
         console.log(err);
       });
     return [pricesArray, datesArray];
+  },
+  getWatchlistData: function(list) {
+    let symbols = list.join(",");
+    let data = [];
+    axios
+      .get(
+        `https://sandbox.iexapis.com/stable/stock/market/batch?symbols=${symbols}&types=quote&filter=symbol,latestPrice,changePercent&token=${
+          config.IEX.public_token
+        }`
+      )
+      .then(res => {
+        let resData = res.data;
+        for (let i in resData) {
+          data.push(resData[i]);
+        }
+      })
+      .catch(err => {
+        console.log({ err });
+      });
+    return data;
   }
 };

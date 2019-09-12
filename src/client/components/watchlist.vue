@@ -6,11 +6,12 @@
         <CellGroup @on-click="handleClick">
           <Cell
             class="cell"
-            v-for="symbol in watchlist"
-            :key="symbol"
-            :title="symbol"
-            :name="symbol"
-            extra="$34.78"
+            v-for="symbol in lastPrices"
+            :key="symbol.quote.symbol"
+            :title="symbol.quote.symbol"
+            :name="symbol.quote.symbol"
+            :extra="symbol.quote.latestPrice.toString()"
+            :label="(symbol.quote.changePercent * 100).toFixed(2).toString() + '%'"
           />
         </CellGroup>
       </Scroll>
@@ -19,8 +20,43 @@
 </template>
 
 <script>
+import IEX from "./../api/IEX";
+import moment from "moment-timezone";
 export default {
   name: "Watchlist",
+  data() {
+    return {
+      lastPrices: [],
+      interval: null
+    };
+  },
+  async mounted() {
+    const date = moment().tz("America/New_York");
+    const day = date.day();
+    const openTime = moment("9:30am", "h:mma");
+    const closeTime = moment("4:00pm", "h:mma");
+
+    if (this.$route.name === "dashboard" && this.watchlist.length) {
+      if (
+        day > 0 &&
+        day < 6 &&
+        date.isAfter(openTime) &&
+        date.isBefore(closeTime)
+      ) {
+        this.interval = setInterval(async () => {
+          this.lastPrices = await IEX.getWatchlistData(
+            this.$store.getters.GET_USER.watchlist
+          );
+        }, 5000);
+      }
+    } else {
+      setTimeout(() => {
+        this.lastPrices = IEX.getWatchlistData(
+          this.$store.getters.GET_USER.watchlist
+        );
+      }, 1000);
+    }
+  },
   computed: {
     watchlist() {
       return this.$store.getters.GET_USER.watchlist;

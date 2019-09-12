@@ -8,7 +8,8 @@
         <h1>${{lastPrice}}</h1>
       </span>
     </div>
-    <Card style="height: 300px; width: 600px; backgroundColor: rgb(37, 39, 46);">
+    <Card style="height: 300px; width: 600px; backgroundColor: white;">
+      <!-- rgb(37, 39, 46 -->
       <div>
         <canvas id="myChart"></canvas>
       </div>
@@ -38,7 +39,7 @@
 
 <script>
 import Chart from "chart.js";
-import moment from "moment";
+import moment from "moment-timezone";
 import IEX from "./../api/IEX";
 export default {
   name: "chart",
