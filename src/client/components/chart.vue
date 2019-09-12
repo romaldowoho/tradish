@@ -14,10 +14,24 @@
       </div>
     </Card>
     <div class="periods">
-      <a value="1d" class="link" @click="getChartData(symbol, '1d')">1d</a>
-      <a value="1m" class="link" @click="getChartData(symbol, '1m')">1m</a>
-      <a value="1y" class="link" @click="getChartData(symbol, '1y')">1y</a>
-      <a value="5y" class="link" @click="getChartData(symbol, '5y')">5y</a>
+      <Tabs size="small" value="1d" @on-click="getChartData">
+        <TabPane label="1D" name="1d"></TabPane>
+        <TabPane label="1M" name="1mm"></TabPane>
+        <TabPane label="1Y" name="1y"></TabPane>
+        <TabPane label="5Y" name="5y"></TabPane>
+        <TabPane label="MAX" name="max"></TabPane>
+        <TabPane :disabled="true"></TabPane>
+        <TabPane :disabled="true"></TabPane>
+        <TabPane :disabled="true"></TabPane>
+        <TabPane :disabled="true"></TabPane>
+        <TabPane :disabled="true"></TabPane>
+        <TabPane :disabled="true"></TabPane>
+        <TabPane :disabled="true"></TabPane>
+        <TabPane :disabled="true"></TabPane>
+        <TabPane :disabled="true"></TabPane>
+        <TabPane :disabled="true"></TabPane>
+        <TabPane :disabled="true"></TabPane>
+      </Tabs>
     </div>
   </div>
 </template>
@@ -58,18 +72,18 @@ export default {
       this.chart.update();
     },
     symbol: function(val) {
-      this.getChartData(val, "1m");
+      this.getChartData("1d");
     }
   },
   beforeMount: function() {
-    this.getChartData(this.symbol, "1m");
+    this.getChartData("1d");
   },
   mounted: function() {
     this.createChart();
   },
   methods: {
-    getChartData(symbol, period) {
-      [this.chartPrices, this.chartDates] = IEX.getChartData(symbol, period);
+    getChartData(name) {
+      [this.chartPrices, this.chartDates] = IEX.getChartData(this.symbol, name);
     },
     emitTerminalInfo() {
       let info = {
@@ -169,6 +183,7 @@ export default {
   display: flex;
   justify-content: left;
   padding-top: 5px;
+  font-weight: bold;
 }
 .link {
   padding-right: 5px;

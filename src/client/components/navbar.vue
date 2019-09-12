@@ -29,11 +29,6 @@ export default {
   data() {
     return {};
   },
-  beforeMount() {
-    if (this.$cookie.get("tradish-session")) {
-      this.isLoggedIn = true;
-    }
-  },
   methods: {
     goHome() {
       this.$router.push({ name: "home" });

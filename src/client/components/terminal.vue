@@ -9,11 +9,13 @@
             v-if="!readyToOrder"
             :label="tabBuyLabel"
             name="Buy"
+            :index="1"
           >${{fundsAvailable}} available</TabPane>
           <TabPane
             v-if="ownShare && !readyToOrder"
             :label="tabSellLabel"
             name="Sell"
+            :index="2"
           >{{sharesOwned}} available to sell</TabPane>
         </Tabs>
       </p>
@@ -97,10 +99,10 @@ export default {
       this.readyToOrder = false;
       this.totalShares = 0;
     },
-    orderPlace() {
+    async orderPlace() {
       if (this.activeTab === "Buy") {
         if (this.user.balance >= this.totalCost) {
-          DB.buyShares(
+          await DB.buyShares(
             this,
             this.info.symbol,
             this.totalShares,
@@ -113,7 +115,7 @@ export default {
         }
       } else {
         if (this.totalShares <= this.sharesOwned) {
-          DB.sellShares(
+          await DB.sellShares(
             this,
             this.info.symbol,
             this.totalShares,

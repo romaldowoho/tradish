@@ -1,20 +1,31 @@
 <template>
-  <div class="wrap">
-    <h1>Welcome to your dashboard</h1>
+  <div class="dashboard-wrap">
+    <!-- <h1>Welcome to your dashboard</h1> -->
     <div class="chart">
       <Chart symbol="RUN" />
-      <!-- <ChartSmall :symbol="'RUN'" /> -->
+    </div>
+    <div class="right-card">
+      <Watchlist />
     </div>
   </div>
 </template>
 
 <script>
 import Chart from "./../components/chart";
-import ChartSmall from "./../components/chartSmall";
+import Watchlist from "./../components/watchlist";
 export default {
   components: {
     Chart,
-    ChartSmall
+    Watchlist
+  },
+  methods: {
+    handleClick(val) {
+      // this.$router.push({
+      //   name: "stock-page",
+      //   params: { symbol: val }
+      // });
+      console.log("huhua");
+    }
   },
   computed: {
     symbol: function() {
@@ -31,12 +42,25 @@ export default {
 </script>
 
 <style scoped>
-.wrap {
-  /* padding-top: 5%; */
+.dashboard-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 .chart {
-  padding-top: 3%;
+  display: flex;
   position: relative;
-  left: 10%;
+  justify-content: center;
+  width: 40%;
+  left: 8%;
+  margin-top: 5%;
+}
+.right-card {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  margin-top: 7%;
+  width: 40%;
+  right: 8%;
 }
 </style>

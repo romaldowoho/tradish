@@ -18,11 +18,11 @@ export default {
         console.log({ err });
       });
   },
-  buyShares: function(ctx, symbol, quantity, totalCost, doesOwn) {
+  buyShares: async function(ctx, symbol, quantity, totalCost, doesOwn) {
     // loading bar start
     ctx.$Loading.start();
     ///////////////////////////
-    axios
+    await axios
       .post("http://localhost:3000/api/buyOrder", {
         Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
         symbol,
@@ -43,11 +43,11 @@ export default {
         console.log({ err });
       });
   },
-  sellShares: function(ctx, symbol, quantity, totalCost) {
+  sellShares: async function(ctx, symbol, quantity, totalCost) {
     // loading bar start
     ctx.$Loading.start();
     ///////////////////////////
-    axios
+    await axios
       .post("http://localhost:3000/api/sellOrder", {
         Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
         symbol,
