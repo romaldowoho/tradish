@@ -1,10 +1,15 @@
 <template>
-  <div class="main">
-    <div class="chart">
-      <Chart :symbol="symbol" @terminalInfo="setTerminalProp" />
+  <div>
+    <div class="main-row">
+      <div class="chart">
+        <Chart :symbol="symbol" @terminalInfo="setTerminalProp" />
+      </div>
+      <div class="terminal">
+        <Terminal :info="terminalInfo" />
+      </div>
     </div>
-    <div class="terminal">
-      <Terminal :info="terminalInfo" />
+    <div class="about-row">
+      <About :company="symbol" class="about" />
     </div>
   </div>
 </template>
@@ -12,10 +17,12 @@
 <script>
 import Chart from "./../components/chart";
 import Terminal from "./../components/terminal";
+import About from "./../components/about";
 export default {
   components: {
     Chart,
-    Terminal
+    Terminal,
+    About
   },
   data() {
     return {
@@ -36,7 +43,7 @@ export default {
 </script>
 
 <style scoped>
-.main {
+.main-row {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -56,5 +63,13 @@ export default {
   margin-top: 7%;
   width: 40%;
   right: 8%;
+}
+.about-row {
+  display: flex;
+}
+.about {
+  position: relative;
+  margin-top: 80px;
+  left: 8%;
 }
 </style>

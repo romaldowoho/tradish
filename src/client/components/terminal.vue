@@ -36,7 +36,14 @@
           <div class="row-value">${{totalCost}}</div>
         </div>
         <div class="button">
-          <Button type="success" size="large" @click="orderReview">Review Order</Button>
+          <Tooltip :dasabled="!isMarketOpen" placement="top" content="Markets are currently closed">
+            <Button
+              type="success"
+              :disabled="!isMarketOpen"
+              size="large"
+              @click="orderReview"
+            >Review Order</Button>
+          </Tooltip>
         </div>
       </div>
 
@@ -59,7 +66,10 @@
 <script>
 import axios from "axios";
 import DB from "./../api/DB";
+import IEX from "./../api/IEX";
 import eyeButton from "./../components/button-watchlist";
+import moment from "moment-timezone";
+
 export default {
   components: {
     eyeButton
@@ -81,13 +91,6 @@ export default {
   },
   beforeMount() {},
   methods: {
-    temp() {
-      if (this.eyeColor) {
-        this.eyeColor = "";
-      } else {
-        this.eyeColor = "green";
-      }
-    },
     orderReview() {
       if (this.totalShares > 0 && this.totalShares % 1 == 0) {
         this.readyToOrder = true;
@@ -132,6 +135,10 @@ export default {
     }
   },
   computed: {
+    isMarketOpen() {
+      console.log(IEX.isMarketOpen());
+      return IEX.isMarketOpen;
+    },
     user() {
       return this.$store.getters.GET_USER;
     },

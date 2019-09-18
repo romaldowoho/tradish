@@ -1,6 +1,6 @@
 <template>
   <div class="wrap">
-    <div class="stock-info">
+    <div v-if="symbol" class="stock-info">
       <span class="symbol">
         <h1>{{symbol}}</h1>
       </span>

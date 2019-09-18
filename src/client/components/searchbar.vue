@@ -44,5 +44,6 @@ export default {
 .selector .vs__dropdown-toggle,
 .selector .vs__dropdown-menu {
   border: none;
+  color: red;
 }
 </style>

@@ -31,18 +31,8 @@ export default {
     };
   },
   async mounted() {
-    const date = moment().tz("America/New_York");
-    const day = date.day();
-    const openTime = moment("9:30am", "h:mma");
-    const closeTime = moment("4:00pm", "h:mma");
-
     if (this.$route.name === "dashboard" && this.watchlist.length) {
-      if (
-        day > 0 &&
-        day < 6 &&
-        date.isAfter(openTime) &&
-        date.isBefore(closeTime)
-      ) {
+      if (IEX.isMarketOpen) {
         this.interval = setInterval(async () => {
           this.lastPrices = await IEX.getWatchlistData(
             this.$store.getters.GET_USER.watchlist

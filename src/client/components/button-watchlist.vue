@@ -28,6 +28,10 @@ export default {
   methods: {
     handleClick() {
       let action = this.isInList ? "remove" : "add";
+      this.$Notice.success({
+        title: this.isInList ? "Removed from watchlist" : "Added to watchlist",
+        duration: 1.5
+      });
       DB.handleWatchlist(this, this.symbol, action);
     }
   },
