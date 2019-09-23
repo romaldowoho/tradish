@@ -20,7 +20,7 @@
         </Tabs>
       </p>
 
-      <div v-if="!readyToOrder">
+      <div v-if="!readyToOrder && !ordering">
         <div class="terminal-row">
           <div class="row-name">Shares</div>
           <div>
@@ -28,36 +28,43 @@
           </div>
         </div>
         <div class="terminal-row">
-          <div class="row-name">Market Price</div>
+          <div class="row-name" style="margin-right: 0;">
+            <Poptip content="hello" placement="left-end">
+              Market Price
+              <a>
+                <Icon type="ios-information-circle-outline" />
+              </a>
+              <div slot="title">This is the latest reported price</div>
+              <div slot="content">Your order will be processed using the best bid/ask price from IEX</div>
+            </Poptip>
+          </div>
           <div class="row-value">${{info.price}}</div>
         </div>
         <div class="terminal-row">
-          <div class="row-name">Total cost</div>
+          <div class="row-name">Estimated cost</div>
           <div class="row-value">${{totalCost}}</div>
         </div>
         <div class="button">
-          <Tooltip :dasabled="!isMarketOpen" placement="top" content="Markets are currently closed">
-            <Button
-              type="success"
-              :disabled="!isMarketOpen"
-              size="large"
-              @click="orderReview"
-            >Review Order</Button>
-          </Tooltip>
+          <Button type="success" size="large" @click="orderReview">Review Order</Button>
         </div>
       </div>
 
-      <div v-if="readyToOrder" class="order-window">
+      <div v-if="readyToOrder && !ordering" class="order-window">
         <div
           class="terminal-row"
           style="font-weight: bold;"
-        >{{this.activeTab}} {{totalShares}} {{shareSpelling}} of {{info.symbol}} at ${{info.price}} for a total of ${{totalCost}}</div>
+        >Place a market order to {{this.activeTab.toLowerCase()}} {{totalShares}} {{shareSpelling}} of {{info.symbol}}</div>
         <div class="button-order">
           <Button type="success" size="large" @click="orderPlace">Place Order</Button>
         </div>
         <div class="button-cancel">
           <Button type="error" size="large" @click="orderReset">Cancel</Button>
         </div>
+      </div>
+
+      <div v-if="ordering">
+        <Spin size="large" class="spin"></Spin>
+        <div>Looking for the best price</div>
       </div>
     </Card>
   </div>
@@ -69,6 +76,7 @@ import DB from "./../api/DB";
 import IEX from "./../api/IEX";
 import eyeButton from "./../components/button-watchlist";
 import moment from "moment-timezone";
+import { setTimeout } from "timers";
 
 export default {
   components: {
@@ -85,6 +93,7 @@ export default {
     return {
       totalShares: 0,
       readyToOrder: false,
+      ordering: false,
       activeTab: "Buy",
       eyeColor: ""
     };
@@ -92,51 +101,77 @@ export default {
   beforeMount() {},
   methods: {
     orderReview() {
-      if (this.totalShares > 0 && this.totalShares % 1 == 0) {
-        this.readyToOrder = true;
-      } else {
+      IEX.getRatings(this.info.symbol);
+      if (
+        this.totalShares <= 0 ||
+        !Number.isInteger(parseInt(this.totalShares))
+      ) {
         this.$Message.warning("Please enter a valid number of shares");
+        return;
+      } else if (
+        this.activeTab === "Buy" &&
+        this.user.balance < this.totalCost
+      ) {
+        this.$Message.error("You don't have enough funds");
+        return;
+      } else if (
+        this.activeTab === "Sell" &&
+        this.totalShares > this.sharesOwned
+      ) {
+        this.$Message.error("You don't have enough shares to place the order");
+        return;
+      } else {
+        this.readyToOrder = true;
       }
     },
     orderReset() {
       this.readyToOrder = false;
       this.totalShares = 0;
+      this.ordering = false;
     },
     async orderPlace() {
-      if (this.activeTab === "Buy") {
-        if (this.user.balance >= this.totalCost) {
+      this.ordering = true;
+      let time = Math.random() * 3000 + 2000;
+      let latestPrice = await IEX.getLatestPrice(this.info.symbol);
+      let totalCost = this.totalShares * latestPrice;
+      setTimeout(async () => {
+        if (this.activeTab === "Buy") {
           await DB.buyShares(
             this,
             this.info.symbol,
             this.totalShares,
-            this.totalCost,
+            totalCost,
             this.ownShare
           );
+          setTimeout(() => {
+            this.$Modal.success({
+              title: `Latest ask price: $${latestPrice}`,
+              content: `Bought ${this.totalShares} ${this.shareSpelling} of ${this.info.symbol} for a total of $${totalCost}`,
+              okText: "Done"
+            });
+            this.orderReset();
+          }, 2000);
         } else {
-          this.$Message.error("You don't have enough funds");
-          return;
-        }
-      } else {
-        if (this.totalShares <= this.sharesOwned) {
           await DB.sellShares(
             this,
             this.info.symbol,
             this.totalShares,
-            this.totalCost
+            totalCost
           );
-        } else {
-          this.$Message.error(
-            "You don't have enough shares to place the order"
-          );
-          return;
+          setTimeout(() => {
+            this.$Modal.success({
+              title: `Latest bid price: $${latestPrice}`,
+              content: `Sold ${this.totalShares} ${this.shareSpelling} of ${this.info.symbol} for a total of $${totalCost}`,
+              okText: "Done"
+            });
+            this.orderReset();
+          }, 2000);
         }
-      }
-      this.orderReset();
+      }, time);
     }
   },
   computed: {
     isMarketOpen() {
-      console.log(IEX.isMarketOpen());
       return IEX.isMarketOpen;
     },
     user() {
@@ -215,5 +250,21 @@ export default {
 }
 .button-cancel {
   margin-top: 5%;
+}
+.spin {
+  position: relative;
+  margin-left: 140px;
+  margin-top: 80px;
+}
+.ml12 {
+  font-weight: 200;
+  font-size: 1.8em;
+  text-transform: uppercase;
+  letter-spacing: 0.5em;
+}
+
+.ml12 .letter {
+  display: inline-block;
+  line-height: 1em;
 }
 </style>

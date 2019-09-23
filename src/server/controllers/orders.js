@@ -33,6 +33,12 @@ module.exports.buy = async function(ctx, next) {
     user.portfolio.push(newStock);
   }
 
+  // remove from watchlist
+  let index = user.watchlist.indexOf(newStock.symbol);
+  if (index !== -1) {
+    user.watchlist.splice(index, 1);
+  }
+
   //update balance
   console.log("total cost: ", ctx.request.body.totalCost);
   user.balance -= parseFloat(ctx.request.body.totalCost);

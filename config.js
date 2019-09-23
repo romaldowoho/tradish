@@ -30,6 +30,7 @@ module.exports = {
     password: process.env.MAIL_PASS
   },
   IEX: {
-    public_token: "Tpk_825cbc0a138841a8a8debcbe5d7d84ea"
+    public_token: "pk_4f6855b1261044f2861fc64184bbf31e",
+    sandbox_token: "Tpk_825cbc0a138841a8a8debcbe5d7d84ea"
   }
 };

@@ -31,7 +31,7 @@ export default {
   },
   methods: {
     goHome() {
-      this.$router.push({ name: "home" });
+      this.$router.push({ name: "dashboard" });
     },
     logout() {
       let token = this.$cookie.get("tradish-session");

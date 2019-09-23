@@ -1,41 +1,26 @@
 <template>
   <div class="dashboard-wrap">
-    <!-- <h1>Welcome to your dashboard</h1> -->
     <div class="chart">
       <Chart symbol="RUN" />
     </div>
     <div class="right-card">
-      <Watchlist />
+      <Portfolio />
     </div>
   </div>
 </template>
 
 <script>
 import Chart from "./../components/chart";
-import Watchlist from "./../components/watchlist";
+import Portfolio from "./../components/portfolio";
 export default {
   components: {
     Chart,
-    Watchlist
+    Portfolio
   },
-  methods: {
-    handleClick(val) {
-      // this.$router.push({
-      //   name: "stock-page",
-      //   params: { symbol: val }
-      // });
-      console.log("huhua");
-    }
-  },
+  methods: {},
   computed: {
     symbol: function() {
       return this.$store.getters.GET_CHART_SYMBOL;
-    },
-    prices: function() {
-      return this.$store.getters.GET_CHART_PRICES;
-    },
-    dates: function() {
-      return this.$store.getters.GET_CHART_DATES;
     }
   }
 };

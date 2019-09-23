@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export default {
-  getUserInfo: function(ctx) {
-    axios
+  getUserInfo: async function(ctx) {
+    await axios
       .get("http://localhost:3000/api/getUser", {
         headers: {
           Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`
@@ -32,11 +32,12 @@ export default {
       })
       .then(res => {
         if (res.status == 200) {
+          let timeout = Math.random() * 2000 + 1000;
           setTimeout(() => {
             const user = res.data.userInfo;
             ctx.$store.dispatch("SET_USER", user);
             ctx.$Loading.finish();
-          }, 2000);
+          }, timeout);
         }
       })
       .catch(err => {
@@ -56,11 +57,12 @@ export default {
       })
       .then(res => {
         if (res.status == 200) {
+          let timeout = Math.random() * 2000 + 1000;
           setTimeout(() => {
             const user = res.data.userInfo;
             ctx.$store.dispatch("SET_USER", user);
             ctx.$Loading.finish();
-          }, 2000);
+          }, timeout);
         }
       })
       .catch(err => {

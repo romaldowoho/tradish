@@ -14,7 +14,7 @@ export default {
   components: {
     Navbar
   },
-  async beforeUpdate() {
+  async created() {
     if (this.$cookie.get("tradish-session")) {
       await DB.getUserInfo(this);
     }

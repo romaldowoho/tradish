@@ -9,7 +9,6 @@
       </span>
     </div>
     <Card style="height: 300px; width: 600px; backgroundColor: white;">
-      <!-- rgb(37, 39, 46 -->
       <div>
         <canvas id="myChart"></canvas>
       </div>
@@ -53,7 +52,8 @@ export default {
     return {
       chart: null,
       chartPrices: [],
-      chartDates: []
+      chartDates: [],
+      chartColor: "rgb(19, 189, 137)"
     };
   },
   computed: {
@@ -72,6 +72,10 @@ export default {
       this.chart.data.labels = val;
       this.chart.update();
     },
+    chartColor: function(val) {
+      this.chart.data.datasets[0].borderColor = val;
+      this.chart.update();
+    },
     symbol: function(val) {
       this.getChartData("1d");
     }
@@ -83,8 +87,12 @@ export default {
     this.createChart();
   },
   methods: {
-    getChartData(name) {
-      [this.chartPrices, this.chartDates] = IEX.getChartData(this.symbol, name);
+    async getChartData(name) {
+      [
+        this.chartPrices,
+        this.chartDates,
+        this.chartColor
+      ] = await IEX.getChartData(this.symbol, name);
     },
     emitTerminalInfo() {
       let info = {
@@ -102,7 +110,7 @@ export default {
           datasets: [
             {
               backgroundColor: "transparent",
-              borderColor: "rgb(19, 189, 137)",
+              borderColor: this.chartColor,
               borderWidth: 1.5,
               data: this.chartPrices
             }
