@@ -34,7 +34,7 @@ export default {
         if (res.status == 200) {
           let timeout = Math.random() * 2000 + 1000;
           setTimeout(() => {
-            const user = res.data.userInfo;
+            const user = res.data.portfolioInfo;
             ctx.$store.dispatch("SET_USER", user);
             ctx.$Loading.finish();
           }, timeout);
@@ -59,7 +59,7 @@ export default {
         if (res.status == 200) {
           let timeout = Math.random() * 2000 + 1000;
           setTimeout(() => {
-            const user = res.data.userInfo;
+            const user = res.data.portfolioInfo;
             ctx.$store.dispatch("SET_USER", user);
             ctx.$Loading.finish();
           }, timeout);
@@ -78,7 +78,7 @@ export default {
       })
       .then(res => {
         if (res.status == 200) {
-          const user = res.data.userInfo;
+          const user = res.data.portfolioInfo;
           ctx.$store.dispatch("SET_USER", user);
         }
       })

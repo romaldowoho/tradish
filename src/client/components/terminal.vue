@@ -3,16 +3,16 @@
     <Card class="terminal">
       <!-- <p slot="title">Buy {{info.symbol}}</p> -->
       <p slot="title" class="title">
-        <Tabs :animated="false" v-model="activeTab" :capture-focus="true">
-          <eyeButton v-if="!readyToOrder && !ownShare" slot="extra" :symbol="this.info.symbol" />
+        <Tabs :animated="false" v-model="activeTab">
+          <eyeButton v-if="!readyToOrder && !ownShare()" slot="extra" :symbol="this.info.symbol" />
           <TabPane
             v-if="!readyToOrder"
             :label="tabBuyLabel"
             name="Buy"
             :index="1"
-          >${{fundsAvailable}} available</TabPane>
+          >${{fundsAvailable | formatNumber}} available</TabPane>
           <TabPane
-            v-if="ownShare && !readyToOrder"
+            v-if="ownShare() && !readyToOrder"
             :label="tabSellLabel"
             name="Sell"
             :index="2"
@@ -24,7 +24,14 @@
         <div class="terminal-row">
           <div class="row-name">Shares</div>
           <div>
-            <Input type="number" v-model="totalShares" style="width:60px;" />
+            <input
+              type="number"
+              min="0"
+              onkeypress="return !(event.charCode == 46)"
+              v-model="totalShares"
+              class="input"
+              placeholder="0"
+            />
           </div>
         </div>
         <div class="terminal-row">
@@ -41,7 +48,7 @@
           <div class="row-value">${{info.price}}</div>
         </div>
         <div class="terminal-row">
-          <div class="row-name">Estimated cost</div>
+          <div class="row-name">Estimated {{costOrCredit}}</div>
           <div class="row-value">${{totalCost}}</div>
         </div>
         <div class="button">
@@ -101,10 +108,9 @@ export default {
   beforeMount() {},
   methods: {
     orderReview() {
-      IEX.getRatings(this.info.symbol);
       if (
         this.totalShares <= 0 ||
-        !Number.isInteger(parseInt(this.totalShares))
+        !Number.isInteger(parseFloat(this.totalShares))
       ) {
         this.$Message.warning("Please enter a valid number of shares");
         return;
@@ -128,6 +134,7 @@ export default {
       this.readyToOrder = false;
       this.totalShares = 0;
       this.ordering = false;
+      this.activeTab = "Buy";
     },
     async orderPlace() {
       this.ordering = true;
@@ -141,7 +148,7 @@ export default {
             this.info.symbol,
             this.totalShares,
             totalCost,
-            this.ownShare
+            this.ownShare()
           );
           setTimeout(() => {
             this.$Modal.success({
@@ -168,6 +175,12 @@ export default {
           }, 2000);
         }
       }, time);
+    },
+    ownShare() {
+      let res = this.user.holdings.findIndex(obj => {
+        return obj.symbol == this.info.symbol;
+      });
+      return res !== -1;
     }
   },
   computed: {
@@ -186,14 +199,8 @@ export default {
     tabSellLabel() {
       return "Sell " + this.info.symbol;
     },
-    ownShare() {
-      let res = this.user.portfolio.findIndex(obj => {
-        return obj.symbol == this.info.symbol;
-      });
-      return res !== -1;
-    },
     sharesOwned() {
-      let portfolio = this.user.portfolio;
+      let portfolio = this.user.holdings;
       for (let i in portfolio) {
         if (portfolio[i].symbol == this.info.symbol) {
           return portfolio[i].quantity;
@@ -202,12 +209,23 @@ export default {
     },
     fundsAvailable() {
       if (this.user.balance) {
-        return parseFloat(this.user.balance.toFixed(2));
+        return this.user.balance;
       } else return 0;
     },
     shareSpelling() {
       if (this.totalShares > 1) return "shares";
       else return "share";
+    },
+    costOrCredit() {
+      return this.activeTab == "Buy" ? "cost" : "credit";
+    }
+  },
+  filters: {
+    formatNumber(num) {
+      return Number(num)
+        .toFixed(2)
+        .toString()
+        .replace(/\d(?=(\d{3})+\.)/g, "$&,");
     }
   },
   watch: {
@@ -227,12 +245,27 @@ export default {
 .terminal {
   width: 100%;
   height: 100%;
+  background-color: inherit;
 }
 .order-window {
   margin-top: 10%;
 }
 .title {
   height: 70px;
+}
+.input {
+  width: 60px;
+  background-color: inherit;
+  border: 1px solid;
+  border-color: rgb(209, 205, 205);
+  border-radius: 3px;
+  padding-left: 8px;
+  height: 30px;
+  font-size: 0.9em;
+}
+input:focus {
+  outline-width: 0;
+  border-color: rgba(86, 138, 237, 0.6);
 }
 .row-name {
   font-weight: bold;

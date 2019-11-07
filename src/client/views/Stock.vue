@@ -5,16 +5,45 @@
         <Chart :symbol="symbol" @terminalInfo="setTerminalProp" />
       </div>
       <div class="terminal">
-        <Terminal :info="terminalInfo" />
+        <Terminal :info="terminalInfo" v-if="Object.values(terminalInfo).length" />
       </div>
     </div>
     <div class="rest-row">
-      <div class="about-row">
-        <About :company="symbol" class="about" />
-      </div>
-      <div class="news-row">
-        <News :company="symbol" class="news" />
-      </div>
+      <Row>
+        <Col span="14">
+          <About :company="symbol" class="about" />
+        </Col>
+        <Col span="10">
+          <Peers :symbol="symbol" class="peers" />
+        </Col>
+      </Row>
+      <Row>
+        <Col span="14">
+          <News :company="symbol" class="news" />
+        </Col>
+        <Col span="10">
+          <Ratings :symbol="symbol" class="ratings" />
+        </Col>
+      </Row>
+      <!-- <Col span="8">
+          
+           
+      </Col>-->
+      <!-- </Row> -->
+      <!-- <Row style="width: 700px;">
+        <Col span="24">
+        </Col>
+      </Row>
+      <Row>
+        <Col span="24">
+          <Ratings :symbol="symbol" class="ratings" />
+        </Col>
+      </Row>-->
+      <!-- <Row>
+        <Col span="24">
+          <Peers :symbol="symbol" class="peers" />
+        </Col>
+      </Row>-->
     </div>
   </div>
 </template>
@@ -24,12 +53,16 @@ import Chart from "./../components/chart";
 import Terminal from "./../components/terminal";
 import About from "./../components/about";
 import News from "./../components/news";
+import Ratings from "./../components/ratings";
+import Peers from "./../components/peers";
 export default {
   components: {
     Chart,
     Terminal,
     About,
-    News
+    News,
+    Ratings,
+    Peers
   },
   data() {
     return {
@@ -69,22 +102,30 @@ export default {
   justify-content: center;
   margin-top: 7%;
   width: 40%;
-  right: 8%;
+  right: 7%;
 }
 .rest-row {
   display: flex;
+  width: 100%;
   flex-direction: column;
 }
-.about-row,
-.news-row {
+.about {
   position: relative;
-  display: flex;
-  height: 400px;
+  margin-top: 80px;
+  left: 8%;
 }
-.about,
 .news {
   position: relative;
   margin-top: 80px;
   left: 8%;
+}
+.ratings {
+  position: relative;
+  margin-top: 80px;
+  left: 0%;
+}
+.peers {
+  position: relative;
+  margin-top: 80px;
 }
 </style>

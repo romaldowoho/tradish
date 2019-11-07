@@ -1,7 +1,13 @@
 <template>
   <div class="searchBar">
     <Card :bordered="false" :padding="0">
-      <v-select class="selector" label="searchLabel" :options="companies" v-model="selected"></v-select>
+      <v-select
+        class="selector"
+        label="searchLabel"
+        placeholder="Search"
+        :options="companies"
+        v-model="selected"
+      ></v-select>
     </Card>
   </div>
 </template>
@@ -19,7 +25,7 @@ export default {
   data() {
     return {
       companies: [],
-      selected: "Search"
+      selected: ""
     };
   },
   beforeMount() {
@@ -40,10 +46,7 @@ export default {
 .searchBar {
   width: 1000px;
 }
-.selector .vs__search::placeholder,
-.selector .vs__dropdown-toggle,
-.selector .vs__dropdown-menu {
-  border: none;
-  color: red;
+.selector {
+  background-color: rgba(241, 189, 167, 0.103);
 }
 </style>

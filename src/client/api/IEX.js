@@ -35,13 +35,13 @@ export default {
       });
     return symbols;
   },
-  getChartData: async function(symbol, period) {
+  getChartData: async function(symbol, period, simplify) {
     const prices = [];
     const dates = [];
     let color = null;
     await axios
       .get(
-        `https://sandbox.iexapis.com/stable/stock/${symbol}/chart/${period}?token=${config.IEX.sandbox_token}`
+        `https://sandbox.iexapis.com/stable/stock/${symbol}/chart/${period}?token=${config.IEX.sandbox_token}&chartSimplify=${simplify}`
       )
       .then(res => {
         for (let i = 0; i < res.data.length; i++) {
@@ -75,7 +75,7 @@ export default {
     let data = [];
     await axios
       .get(
-        `https://sandbox.iexapis.com/stable/stock/market/batch?symbols=${symbols}&types=quote&filter=symbol,latestPrice,changePercent&token=${config.IEX.sandbox_token}`
+        `https://sandbox.iexapis.com/stable/stock/market/batch?symbols=${symbols}&types=quote&filter=symbol,latestPrice,changePercent,companyName&token=${config.IEX.sandbox_token}`
       )
       .then(res => {
         let resData = res.data;
@@ -96,7 +96,7 @@ export default {
       )
       .then(res => {
         for (let i in res.data) {
-          if (res.data[i]) {
+          if (res.data[i] && res.data[i] !== "0") {
             info[i] = res.data[i];
           } else {
             info[i] = "-";
@@ -113,7 +113,7 @@ export default {
       )
       .then(res => {
         for (let i in res.data) {
-          if (res.data[i]) {
+          if (res.data[i] && res.data[i] !== "0") {
             info[i] = res.data[i];
           } else {
             info[i] = "-";
@@ -154,19 +154,42 @@ export default {
       .catch(err => {
         console.log({ err });
       });
-    return price;
+    return parseFloat(price).toFixed(2);
   },
-  getRatings: function(symbol) {
-    let ratings = {};
-    axios
+  getRatings: async function(symbol) {
+    let ratings = {
+      ratingBuy: 0,
+      ratingSell: 0,
+      ratingHold: 0
+    };
+    await axios
       .get(
         `https://sandbox.iexapis.com/stable/stock/${symbol}/recommendation-trends/?token=${config.IEX.sandbox_token}&filter=ratingBuy,ratingHold,ratingSell`
       )
       .then(res => {
-        console.log(res);
+        if (res.data.length) {
+          ratings.ratingBuy = res.data[0].ratingBuy;
+          ratings.ratingSell = res.data[0].ratingSell;
+          ratings.ratingHold = res.data[0].ratingHold;
+        }
       })
       .catch(err => {
         console.log({ err });
       });
+    return ratings;
+  },
+  getPeers: async function(symbol) {
+    let peers = [];
+    await axios
+      .get(
+        `https://sandbox.iexapis.com/stable/stock/${symbol}/peers/?token=${config.IEX.sandbox_token}`
+      )
+      .then(res => {
+        peers = res.data;
+      })
+      .catch(err => {
+        console.log({ err });
+      });
+    return peers;
   }
 };

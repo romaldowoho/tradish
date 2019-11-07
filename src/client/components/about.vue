@@ -3,9 +3,8 @@
     <span class="head">
       <h1>About</h1>
     </span>
-
-    <Divider />
-    <div v-if="loaded" class="about">
+    <Divider style="width: 690px;" />
+    <div v-if="loaded" class="about-div">
       <div class="text truncate">
         <Row>
           <Col span="24">{{info.description}}</Col>
@@ -137,10 +136,14 @@ export default {
 <style scoped>
 .about-wrapper {
   width: 45%;
-  line-height: 1.8em;
   height: 4em;
   text-align: left;
   font-size: 1.1em;
+}
+.about-div {
+  position: relative;
+  width: 180%;
+  line-height: 1.8em;
 }
 .head {
   float: left;
@@ -154,7 +157,7 @@ export default {
   height: 6em;
 }
 .cell {
-  margin: 0 0px 12px 0;
+  margin: 0 0 40px 0;
   word-wrap: break-word;
 }
 .subtitle {

@@ -8,7 +8,8 @@
         <h1>${{lastPrice}}</h1>
       </span>
     </div>
-    <Card style="height: 300px; width: 600px; backgroundColor: white;">
+    <!-- <div v-if="this.$store.getters.GET_TOTAL_EQUITY">{{this.$store.getters.GET_TOTAL_EQUITY}}</div> -->
+    <Card style="height: 300px; width: 600px; backgroundColor: inherit;">
       <div>
         <canvas id="myChart"></canvas>
       </div>
@@ -40,6 +41,8 @@
 import Chart from "chart.js";
 import moment from "moment-timezone";
 import IEX from "./../api/IEX";
+// import crosshair from "chartjs-plugin-crosshair";
+
 export default {
   name: "chart",
   props: {
@@ -87,12 +90,12 @@ export default {
     this.createChart();
   },
   methods: {
-    async getChartData(name) {
+    async getChartData(period) {
       [
         this.chartPrices,
         this.chartDates,
         this.chartColor
-      ] = await IEX.getChartData(this.symbol, name);
+      ] = await IEX.getChartData(this.symbol, period, false);
     },
     emitTerminalInfo() {
       let info = {
@@ -118,6 +121,35 @@ export default {
         },
         // Configuration options go here
         options: {
+          // plugins: {
+          //   crosshair: {
+          //     line: {
+          //       color: "#F66", // crosshair line color
+          //       width: 3 // crosshair line width
+          //     },
+          //     sync: {
+          //       enabled: false, // enable trace line syncing with other charts
+          //       group: 1, // chart group
+          //       suppressTooltips: false // suppress tooltips when showing a synced tracer
+          //     },
+          //     zoom: {
+          //       enabled: false, // enable zooming
+          //       zoomboxBackgroundColor: "rgba(66,133,244,0.2)", // background color of zoom box
+          //       zoomboxBorderColor: "#48F", // border color of zoom box
+          //       zoomButtonText: "Reset Zoom", // reset zoom button text
+          //       zoomButtonClass: "reset-zoom" // reset zoom button class
+          //     },
+          //     callbacks: {
+          //       beforeZoom: function(start, end) {
+          //         // called before zoom, return false to prevent zoom
+          //         return true;
+          //       },
+          //       afterZoom: function(start, end) {
+          //         // called after zoom
+          //       }
+          //     }
+          //   }
+          // },
           legend: {
             display: false
           },

@@ -1,29 +1,31 @@
+const Portfolio = require("../models/Portfolio");
+
 module.exports.handleWatchlist = async function(ctx, next) {
-  let user = ctx.user;
+  let portfolio = await Portfolio.findOne({ user: ctx.user._id });
+  if (!portfolio) {
+    portfolio = new Portfolio({ user: ctx.user._id });
+  }
+  console.log(portfolio);
   let symbol = ctx.request.body.symbol;
   let action = ctx.request.body.action;
   if (action && action === "add") {
-    user.watchlist.push(symbol);
+    portfolio.watchlist.push(symbol);
   } else if (action && action == "remove") {
-    for (let i = 0; i < user.watchlist.length; i++) {
-      if (user.watchlist[i] === symbol) {
-        user.watchlist.splice(i, 1);
+    for (let i = 0; i < portfolio.watchlist.length; i++) {
+      if (portfolio.watchlist[i] === symbol) {
+        portfolio.watchlist.splice(i, 1);
         break;
       }
     }
   }
-  await user.save();
+  await portfolio.save();
 
-  const userInfo = {
-    firstName: user.firstName,
-    lastName: user.lastName,
-    username: user.username,
-    email: user.email,
-    balance: user.balance,
-    portfolio: user.portfolio,
-    watchlist: user.watchlist,
-    transactions: user.transactions
+  const portfolioInfo = {
+    balance: portfolio.balance,
+    holdings: portfolio.holdings,
+    watchlist: portfolio.watchlist,
+    transactions: portfolio.transactions
   };
 
-  ctx.body = { userInfo };
+  ctx.body = { portfolioInfo };
 };

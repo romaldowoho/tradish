@@ -1,47 +1,46 @@
 const User = require("../models/User");
+const Portfolio = require("../models/Portfolio");
 
-getUserInfo = function(user) {
-  const userInfo = {
-    firstName: user.firstName,
-    lastName: user.lastName,
-    username: user.username,
-    email: user.email,
-    balance: user.balance,
-    portfolio: user.portfolio,
-    watchlist: user.watchlist,
-    transactions: user.transactions
+getPortfolioInfo = function(portfolio) {
+  const portfolioInfo = {
+    balance: portfolio.balance,
+    holdings: portfolio.holdings,
+    watchlist: portfolio.watchlist,
+    transactions: portfolio.transactions
   };
-  return userInfo;
+  return portfolioInfo;
 };
 module.exports.buy = async function(ctx, next) {
-  let user = ctx.user;
+  let portfolio =
+    (await Portfolio.findOne({ user: ctx.user._id })) ||
+    new Portfolio({ user: ctx.user._id });
   let newStock = {
     symbol: ctx.request.body.symbol,
     quantity: parseInt(ctx.request.body.quantity)
   };
-  console.log("body   ", ctx.request.body);
+
   //check if already owns shares and update portfolio
   if (ctx.request.body.doesOwn) {
-    for (let i = 0; i < user.portfolio.length; i++) {
-      if (user.portfolio[i].symbol == newStock.symbol) {
-        user.portfolio[i].quantity += newStock.quantity;
-        user.markModified("portfolio");
+    for (let i = 0; i < portfolio.holdings.length; i++) {
+      if (portfolio.holdings[i].symbol == newStock.symbol) {
+        portfolio.holdings[i].quantity += newStock.quantity;
+        portfolio.markModified("holdings");
         break;
       }
     }
   } else {
-    user.portfolio.push(newStock);
+    portfolio.holdings.push(newStock);
   }
 
   // remove from watchlist
-  let index = user.watchlist.indexOf(newStock.symbol);
+  let index = portfolio.watchlist.indexOf(newStock.symbol);
   if (index !== -1) {
-    user.watchlist.splice(index, 1);
+    portfolio.watchlist.splice(index, 1);
   }
 
   //update balance
   console.log("total cost: ", ctx.request.body.totalCost);
-  user.balance -= parseFloat(ctx.request.body.totalCost);
+  portfolio.balance -= parseFloat(ctx.request.body.totalCost);
 
   //add transaction
   let transaction = {
@@ -51,37 +50,37 @@ module.exports.buy = async function(ctx, next) {
     quantity: newStock.quantity,
     shareCost: (ctx.request.body.totalCost / newStock.quantity).toFixed(2),
     totalCost: ctx.request.body.totalCost,
-    currBalance: user.balance
+    currBalance: portfolio.balance
   };
-  user.transactions.push(transaction);
+  portfolio.transactions.push(transaction);
 
   // save
-  await user.save();
+  await portfolio.save();
 
-  const userInfo = getUserInfo(user);
-  ctx.body = { userInfo };
+  const portfolioInfo = getPortfolioInfo(portfolio);
+  ctx.body = { portfolioInfo };
 };
 
 module.exports.sell = async function(ctx, next) {
-  let user = ctx.user;
+  let portfolio = await Portfolio.findOne({ user: ctx.user._id });
   let symbol = ctx.request.body.symbol;
   let quantity = parseInt(ctx.request.body.quantity);
 
   // find and update portfolio
-  for (let i = 0; i < user.portfolio.length; i++) {
-    if (user.portfolio[i].symbol == symbol) {
-      if (user.portfolio[i].quantity == quantity) {
-        user.portfolio.splice(i, 1);
+  for (let i = 0; i < portfolio.holdings.length; i++) {
+    if (portfolio.holdings[i].symbol == symbol) {
+      if (portfolio.holdings[i].quantity == quantity) {
+        portfolio.holdings.splice(i, 1);
         break;
       } else {
-        user.portfolio[i].quantity -= quantity;
-        user.markModified("portfolio");
+        portfolio.holdings[i].quantity -= quantity;
+        portfolio.markModified("holdings");
         break;
       }
     }
   }
   // update balance
-  user.balance += parseFloat(ctx.request.body.totalCost);
+  portfolio.balance += parseFloat(ctx.request.body.totalCost);
 
   //add transaction
   let transaction = {
@@ -91,13 +90,13 @@ module.exports.sell = async function(ctx, next) {
     quantity: quantity,
     shareCost: (ctx.request.body.totalCost / quantity).toFixed(2),
     totalCost: ctx.request.body.totalCost,
-    currBalance: user.balance
+    currBalance: portfolio.balance
   };
-  user.transactions.push(transaction);
+  portfolio.transactions.push(transaction);
 
   // save
-  await user.save();
+  await portfolio.save();
 
-  const userInfo = getUserInfo(user);
-  ctx.body = { userInfo };
+  const portfolioInfo = getPortfolioInfo(portfolio);
+  ctx.body = { portfolioInfo };
 };

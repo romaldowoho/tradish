@@ -55,12 +55,12 @@
           v-on:on-close="resetPassNoMatchError"
         >Passwords do not match</Alert>
       </div>Password:
-      <Input :icon="passMatch ? icon : null" v-model="pass1" />
+      <Input type="password" :icon="passMatch ? icon : null" v-model="pass1" />
     </div>
 
     <div class="input">
       Confirm password:
-      <Input :icon="passMatch ? icon : null" v-model="pass2" />
+      <Input type="password" :icon="passMatch ? icon : null" v-model="pass2" />
     </div>
 
     <div class="button">

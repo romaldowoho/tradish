@@ -3,7 +3,7 @@
     <div id="nav">
       <Navbar></Navbar>
     </div>
-    <router-view />
+    <router-view :key="$route.fullPath" />
   </div>
 </template>
 
@@ -29,9 +29,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  background-color: rgba(241, 189, 167, 0.103);
 }
 #nav {
-  padding: 30px;
+  padding: 0px;
 }
 
 #nav a {

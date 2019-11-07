@@ -11,7 +11,7 @@
     </div>
     <div class="input">
       Password:
-      <Input v-model="password" />
+      <Input type="password" v-model="password" />
     </div>
     <div class="button">
       <Button type="success" @click="handleSubmit">Login</Button>

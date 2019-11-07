@@ -1,13 +1,13 @@
 <template>
-  <div class="news-wrapper">
+  <div class="news-wrapper" v-if="news.length">
     <span class="head">
       <h1>News</h1>
     </span>
-    <Divider />
+    <Divider style="width: 60px;" />
     <div v-if="loaded" class="news-container">
       <a
         v-for="article in news"
-        :key="article.headline"
+        :key="article.headline + Math.random()"
         :href="article.url"
         target="_blank"
         class="news"
@@ -76,19 +76,21 @@ export default {
 .news-wrapper {
   width: 45%;
   text-align: left;
-  font-size: 1.1em;
 }
 .news-container {
   width: 100%;
+  font-size: 1.1em;
 }
 .head {
   float: left;
   margin-bottom: 10px;
+  font-size: 1.1em;
 }
 .news {
   height: 150px;
   display: block;
   justify-content: space-between;
+  width: 90%;
 }
 .news-left {
   vertical-align: middle;
@@ -116,6 +118,7 @@ export default {
 .news-image {
   width: 180px;
   height: 120px;
+  border-radius: 8px;
 }
 a:hover {
   background-color: rgba(153, 152, 152, 0.11);
