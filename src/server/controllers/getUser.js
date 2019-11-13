@@ -9,7 +9,6 @@ module.exports = async function getUser(ctx, next) {
     return;
   }
   let portfolio = await Portfolio.findOne({ user: user._id });
-  console.log("portfolio", portfolio);
 
   const userInfo = {
     firstName: user.firstName,

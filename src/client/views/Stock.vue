@@ -25,25 +25,6 @@
           <Ratings :symbol="symbol" class="ratings" />
         </Col>
       </Row>
-      <!-- <Col span="8">
-          
-           
-      </Col>-->
-      <!-- </Row> -->
-      <!-- <Row style="width: 700px;">
-        <Col span="24">
-        </Col>
-      </Row>
-      <Row>
-        <Col span="24">
-          <Ratings :symbol="symbol" class="ratings" />
-        </Col>
-      </Row>-->
-      <!-- <Row>
-        <Col span="24">
-          <Peers :symbol="symbol" class="peers" />
-        </Col>
-      </Row>-->
     </div>
   </div>
 </template>

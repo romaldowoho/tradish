@@ -16,11 +16,11 @@
     </Card>
     <div class="periods">
       <Tabs size="small" value="1d" @on-click="getChartData">
-        <TabPane label="1D" name="1d"></TabPane>
-        <TabPane label="1M" name="1mm"></TabPane>
-        <TabPane label="1Y" name="1y"></TabPane>
-        <TabPane label="5Y" name="5y"></TabPane>
-        <TabPane label="MAX" name="max"></TabPane>
+        <TabPane label="1D" name="1D"></TabPane>
+        <TabPane label="1M" name="1M"></TabPane>
+        <TabPane label="1Y" name="1Y"></TabPane>
+        <TabPane label="5Y" name="5Y"></TabPane>
+        <TabPane label="MAX" name="MAX"></TabPane>
         <TabPane :disabled="true"></TabPane>
         <TabPane :disabled="true"></TabPane>
         <TabPane :disabled="true"></TabPane>
@@ -41,6 +41,7 @@
 import Chart from "chart.js";
 import moment from "moment-timezone";
 import IEX from "./../api/IEX";
+import DB from "./../api/DB";
 // import crosshair from "chartjs-plugin-crosshair";
 
 export default {
@@ -91,11 +92,18 @@ export default {
   },
   methods: {
     async getChartData(period) {
-      [
-        this.chartPrices,
-        this.chartDates,
-        this.chartColor
-      ] = await IEX.getChartData(this.symbol, period, false);
+      if (this.symbol) {
+        [
+          this.chartPrices,
+          this.chartDates,
+          this.chartColor
+        ] = await IEX.getChartData(this.symbol, period, false);
+      } else {
+        let res = await DB.getPortfolioHistory(this, period);
+        console.log("res", res);
+        this.chartDates = res.dates;
+        this.chartPrices = res.value;
+      }
     },
     emitTerminalInfo() {
       let info = {

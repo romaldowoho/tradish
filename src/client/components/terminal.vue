@@ -178,8 +178,9 @@ export default {
     },
     ownShare() {
       let res = this.user.holdings.findIndex(obj => {
-        return obj.symbol == this.info.symbol;
+        return obj.symbol === this.info.symbol;
       });
+      console.log("ownshare", res);
       return res !== -1;
     }
   },
@@ -191,7 +192,7 @@ export default {
       return this.$store.getters.GET_USER;
     },
     totalCost() {
-      return parseFloat((this.totalShares * (this.info.price || 0)).toFixed(2));
+      return parseFloat(this.totalShares * (this.info.price || 0)).toFixed(2);
     },
     tabBuyLabel() {
       return "Buy " + this.info.symbol;

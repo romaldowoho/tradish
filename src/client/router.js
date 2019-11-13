@@ -47,6 +47,11 @@ export default new Router({
       path: "/stocks/:symbol",
       name: "stock-page",
       component: () => import("./views/Stock")
+    },
+    {
+      path: "/history",
+      name: "history",
+      component: () => import("./views/History")
     }
   ]
 });

@@ -8,6 +8,7 @@ const login = require("./controllers/login");
 const logout = require("./controllers/logout");
 const getUser = require("./controllers/getUser");
 const orders = require("./controllers/orders");
+const portfolio = require("./controllers/portfolio");
 const { handleWatchlist } = require("./controllers/handleWatchlist");
 const mustBeAuthenticated = require("./libs/mustBeAuthenticated");
 const handleMongooseValidationError = require("./libs/validationErrors");
@@ -81,6 +82,8 @@ router.get("/confirm*", registration.confirm);
 
 // protected routes
 router.get("/getUser", mustBeAuthenticated, getUser);
+router.post("/getHistory", mustBeAuthenticated, portfolio.getHistory);
+router.post("/getTransactions", mustBeAuthenticated, portfolio.getTransactions);
 router.post("/buyOrder", mustBeAuthenticated, orders.buy);
 router.post("/sellOrder", mustBeAuthenticated, orders.sell);
 router.post("/handleWatchlist", mustBeAuthenticated, handleWatchlist);

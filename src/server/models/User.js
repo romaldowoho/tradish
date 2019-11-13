@@ -40,20 +40,7 @@ const userSchema = mongoose.Schema(
     },
     salt: {
       type: String
-    },
-    balance: {
-      type: Number
-    },
-    portfolio: {
-      type: Array
-    },
-    portfolioValue: {
-      type: Number
-    },
-    watchlist: {
-      type: Array
-    },
-    transactions: Array
+    }
   },
   {
     timestamps: true

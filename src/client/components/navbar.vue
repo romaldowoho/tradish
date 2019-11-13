@@ -30,10 +30,12 @@
                 <Icon type="ios-arrow-forward" />
               </DropdownItem>
               <DropdownItem style="padding: 0; font-size: 30px; width: 100px;">
-                <Divider style="padding: 0; margin: 0; width: 125px;" />
+                <Divider style="padding: 0; margin: 0; width: 100px;" />
               </DropdownItem>
               <DropdownItem>Settings</DropdownItem>
-              <DropdownItem>History</DropdownItem>
+              <DropdownItem>
+                <router-link to="/history">History</router-link>
+              </DropdownItem>
               <DropdownItem>About</DropdownItem>
               <DropdownItem>
                 <router-link to @click.native="logout">Log out</router-link>
@@ -82,7 +84,10 @@ export default {
   filters: {
     formatNumber(num) {
       if (num) {
-        return num.toString().replace(/\d(?=(\d{3})+\.)/g, "$&,");
+        return num
+          .toFixed(2)
+          .toString()
+          .replace(/\d(?=(\d{3})+\.)/g, "$&,");
       }
     }
   }

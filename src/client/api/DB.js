@@ -85,5 +85,37 @@ export default {
       .catch(err => {
         console.log({ err });
       });
+  },
+  getPortfolioHistory: async function(ctx, period) {
+    let data;
+    await axios
+      .post("http://localhost:3000/api/getHistory", {
+        Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
+        period
+      })
+      .then(res => {
+        console.log(res.data.history);
+        data = res.data.history;
+      })
+      .catch(err => {
+        console.log({ err });
+        return;
+      });
+    return data;
+  },
+  getTransactions: async function(ctx) {
+    let transactions;
+    await axios
+      .post("http://localhost:3000/api/getTransactions", {
+        Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`
+      })
+      .then(res => {
+        transactions = res.data.transactions;
+      })
+      .catch(err => {
+        console.log({ err });
+        return;
+      });
+    return transactions;
   }
 };

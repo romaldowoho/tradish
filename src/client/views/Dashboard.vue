@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-wrap">
     <div class="chart">
-      <Chart symbol="RUN" />
+      <Chart />
     </div>
     <div class="right-card">
       <Portfolio />

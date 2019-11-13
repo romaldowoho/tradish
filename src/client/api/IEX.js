@@ -32,6 +32,7 @@ export default {
       })
       .catch(err => {
         console.log(err);
+        return;
       });
     return symbols;
   },
@@ -44,11 +45,15 @@ export default {
         `https://sandbox.iexapis.com/stable/stock/${symbol}/chart/${period}?token=${config.IEX.sandbox_token}&chartSimplify=${simplify}`
       )
       .then(res => {
-        for (let i = 0; i < res.data.length; i++) {
-          if (res.data[i]["minute"] && res.data[i]["average"] !== null) {
-            dates.push(res.data[i]["label"] + " ET");
-            prices.push(res.data[i]["average"].toFixed(2));
-          } else if (res.data[i]["minute"] === undefined) {
+        if (period === "1d") {
+          for (let i = 0; i < res.data.length; i++) {
+            if (res.data[i].average) {
+              dates.push(res.data[i]["label"] + " ET");
+              prices.push(res.data[i]["average"].toFixed(2));
+            }
+          }
+        } else {
+          for (let i = 0; i < res.data.length; i++) {
             dates.push(moment(res.data[i]["date"]).format("MMM Do YY"));
             prices.push(res.data[i]["close"].toFixed(2));
           }
@@ -56,6 +61,7 @@ export default {
       })
       .catch(err => {
         console.log(err);
+        return;
       });
     color =
       parseFloat(prices[0]) <= parseFloat(prices[prices.length - 1])
@@ -85,6 +91,7 @@ export default {
       })
       .catch(err => {
         console.log({ err });
+        return;
       });
     return data;
   },
@@ -105,6 +112,7 @@ export default {
       })
       .catch(err => {
         console.log({ err });
+        return;
       });
 
     await axios
@@ -122,6 +130,7 @@ export default {
       })
       .catch(err => {
         console.log({ err });
+        return;
       });
     return info;
   },
@@ -139,6 +148,7 @@ export default {
       })
       .catch(err => {
         console.log({ err });
+        return;
       });
     return news;
   },
@@ -153,6 +163,7 @@ export default {
       })
       .catch(err => {
         console.log({ err });
+        return;
       });
     return parseFloat(price).toFixed(2);
   },
@@ -175,6 +186,7 @@ export default {
       })
       .catch(err => {
         console.log({ err });
+        return;
       });
     return ratings;
   },
@@ -189,6 +201,7 @@ export default {
       })
       .catch(err => {
         console.log({ err });
+        return;
       });
     return peers;
   }
