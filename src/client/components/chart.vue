@@ -9,13 +9,13 @@
       </span>
     </div>
     <!-- <div v-if="this.$store.getters.GET_TOTAL_EQUITY">{{this.$store.getters.GET_TOTAL_EQUITY}}</div> -->
-    <Card style="height: 300px; width: 600px; backgroundColor: inherit;">
+    <Card style="height: 300px; width: 600px; backgroundColor: inherit;" dis-hover>
       <div>
         <canvas id="myChart"></canvas>
       </div>
     </Card>
     <div class="periods">
-      <Tabs size="small" value="1d" @on-click="getChartData">
+      <Tabs size="small" value="1D" @on-click="getChartData">
         <TabPane label="1D" name="1D"></TabPane>
         <TabPane label="1M" name="1M"></TabPane>
         <TabPane label="1Y" name="1Y"></TabPane>
@@ -81,11 +81,11 @@ export default {
       this.chart.update();
     },
     symbol: function(val) {
-      this.getChartData("1d");
+      this.getChartData("1D");
     }
   },
   beforeMount: function() {
-    this.getChartData("1d");
+    this.getChartData("1D");
   },
   mounted: function() {
     this.createChart();
@@ -129,35 +129,7 @@ export default {
         },
         // Configuration options go here
         options: {
-          // plugins: {
-          //   crosshair: {
-          //     line: {
-          //       color: "#F66", // crosshair line color
-          //       width: 3 // crosshair line width
-          //     },
-          //     sync: {
-          //       enabled: false, // enable trace line syncing with other charts
-          //       group: 1, // chart group
-          //       suppressTooltips: false // suppress tooltips when showing a synced tracer
-          //     },
-          //     zoom: {
-          //       enabled: false, // enable zooming
-          //       zoomboxBackgroundColor: "rgba(66,133,244,0.2)", // background color of zoom box
-          //       zoomboxBorderColor: "#48F", // border color of zoom box
-          //       zoomButtonText: "Reset Zoom", // reset zoom button text
-          //       zoomButtonClass: "reset-zoom" // reset zoom button class
-          //     },
-          //     callbacks: {
-          //       beforeZoom: function(start, end) {
-          //         // called before zoom, return false to prevent zoom
-          //         return true;
-          //       },
-          //       afterZoom: function(start, end) {
-          //         // called after zoom
-          //       }
-          //     }
-          //   }
-          // },
+          plugins: {},
           legend: {
             display: false
           },
@@ -169,7 +141,8 @@ export default {
             xAxes: [
               {
                 gridLines: {
-                  display: false
+                  display: false,
+                  drawBorder: false
                 },
                 ticks: {
                   display: false

@@ -53,7 +53,6 @@ export default {
       "TSLA",
       "T"
     ]);
-    console.log("ppers", this.peersInfo);
   },
   methods: {
     percentColor(val) {

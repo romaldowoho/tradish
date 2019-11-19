@@ -7,7 +7,8 @@
     <div class="table" v-if="transactions.length">
       <Table
         :highlight-row="true"
-        :height="600"
+        :height="700"
+        :width="1200"
         :row-class-name="rowClassName"
         :columns="columns"
         :data="transactions"
@@ -79,5 +80,8 @@ export default {
 }
 .table {
   margin-top: 20px;
+  position: relative;
+  margin-left: 8%;
+  margin-right: 8%;
 }
 </style>

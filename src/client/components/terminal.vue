@@ -1,6 +1,6 @@
 <template>
   <div class="terminal-wrap">
-    <Card class="terminal">
+    <Card class="terminal" dis-hover>
       <!-- <p slot="title">Buy {{info.symbol}}</p> -->
       <p slot="title" class="title">
         <Tabs :animated="false" v-model="activeTab">
@@ -140,7 +140,7 @@ export default {
       this.ordering = true;
       let time = Math.random() * 3000 + 2000;
       let latestPrice = await IEX.getLatestPrice(this.info.symbol);
-      let totalCost = this.totalShares * latestPrice;
+      let totalCost = parseFloat((this.totalShares * latestPrice).toFixed(2));
       setTimeout(async () => {
         if (this.activeTab === "Buy") {
           await DB.buyShares(
@@ -180,7 +180,6 @@ export default {
       let res = this.user.holdings.findIndex(obj => {
         return obj.symbol === this.info.symbol;
       });
-      console.log("ownshare", res);
       return res !== -1;
     }
   },

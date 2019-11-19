@@ -50,7 +50,7 @@ const getDates = function(period) {
         startDate = moment(startDate).add(7, "days");
       }
       break;
-    case "5Y" || "MAX":
+    case "5Y":
       startDate = moment(curDate).subtract(1825, "days");
       while (startDate < curDate) {
         if (startDate.day() > 0 && startDate.day() < 6) {
@@ -63,52 +63,133 @@ const getDates = function(period) {
   return dates;
 };
 
-const getPriceOnDate = async function(symbol, date) {
-  let price;
-  date = date.replace(/-/g, "");
-  console.log("PASSING", symbol, date);
+const getPriceOnDate = function(histObj, date) {
+  let idx = histObj.dates.indexOf(date);
+  console.log(idx);
+  if (histObj.prices[idx]) return histObj.prices[idx];
+
+  //if the price at the date is null, get the average of the prev and next available prices
+
+  let prevDateIdx = histObj.dates.indexOf(moment(date).subtract(1, "days"));
+  let nextDateIdx = histObj.dates.indexOf(moment(date).add(1, "days"));
+  let prevPrice;
+  let nextPrice;
+  while (prevDateIdx > -1) {
+    if (histObj.prices[prevDateIdx]) {
+      prevPrice = histObj.prices[prevDateIdx];
+      break;
+    }
+    prevDateIdx--;
+  }
+  while (nextDateIdx < histObj.dates.length) {
+    if (histObj.prices[nextDateIdx]) {
+      nextPrice = histObj.prices[nextDateIdx];
+      break;
+    }
+    nextDateIdx++;
+  }
+  //   console.log("Prev and Next", prevPrice, nextPrice);
+  return +((prevPrice + nextPrice) / 2).toFixed(2);
+};
+
+const getHistoricalPrices = async function(symbol) {
+  let prices = [];
+  let dates = [];
   await axios
     .get(
-      `https://sandbox.iexapis.com/stable/stock/${symbol}/chart/date/${date}?chartByDay=true&token=${config.IEX.sandbox_token}`
+      `https://sandbox.iexapis.com/stable/stock/${symbol}/chart/5y?token=${config.IEX.sandbox_token}`
     )
     .then(res => {
-      //   console.log(res.data);
-      price = parseFloat(res.data[0].close.toFixed(2));
+      for (let i = 0; i < res.data.length; i++) {
+        dates.push(moment(res.data[i]["date"]).format("YYYY-MM-DD"));
+        prices.push(res.data[i]["close"].toFixed(2));
+      }
     })
     .catch(err => {
       console.log(err);
       return;
     });
-  console.log(price);
-  return price;
+  let toReturn = {
+    prices,
+    dates
+  };
+  return toReturn;
 };
 
 module.exports.getHistory = async function(ctx, next) {
   let portfolio = await Portfolio.findOne({ user: ctx.user });
-  const period = ctx.request.body.period;
   let history = {
-    dates: [],
-    value: []
+    "5Y": {
+      dates: [],
+      values: []
+    },
+    "1Y": {
+      dates: [],
+      values: []
+    },
+    "1M": {
+      dates: [],
+      values: []
+    }
   };
-  const dates = getDates(period);
-  console.log(dates);
-  for (let i = 0; i < dates.length; i++) {
-    let date = new Date(dates[i]);
-    console.log("date", date);
+  // histPrices will contain prices and dates of a stock for the past 5 years
+  let histPrices = {};
+  const dates_5y = getDates("5Y");
+  const dates_1y = getDates("1Y");
+  const dates_1m = getDates("1M");
+  let valueOnDate = 0;
+
+  for (let i = 0; i < dates_5y.length; i++) {
+    let date = new Date(dates_5y[i]);
     let portfOnDate = getHoldingsOnDate(date, portfolio.transactions);
-    console.log("Portf", portfOnDate);
     if (Object.keys(portfOnDate).length) {
-      let valueOnDate = 0;
       for (let stock in portfOnDate) {
-        console.log("STOCK", stock);
-        let price = await getPriceOnDate(stock, dates[i]);
+        if (!(stock in histPrices)) {
+          histPrices[stock] = await getHistoricalPrices(stock);
+        }
+        let price = getPriceOnDate(histPrices[stock], dates_5y[i]);
         valueOnDate += price * parseInt(portfOnDate[stock]);
       }
     }
-    history.dates.push(dates[i]);
-    history.value.push(parseFloat(valueOnDate.toFixed(2)));
+    history["5Y"].dates.push(dates_5y[i]);
+    history["5Y"].values.push(parseFloat(valueOnDate.toFixed(2)));
+    valueOnDate = 0;
   }
-  console.log(history);
+
+  for (let i = 0; i < dates_1y.length; i++) {
+    let date = new Date(dates_1y[i]);
+    let portfOnDate = getHoldingsOnDate(date, portfolio.transactions);
+    if (Object.keys(portfOnDate).length) {
+      for (let stock in portfOnDate) {
+        if (!(stock in histPrices)) {
+          histPrices[stock] = await getHistoricalPrices(stock);
+        }
+        let price = getPriceOnDate(histPrices[stock], dates_1y[i]);
+        valueOnDate += price * parseInt(portfOnDate[stock]);
+      }
+    }
+    history["1Y"].dates.push(dates_1y[i]);
+    history["1Y"].values.push(parseFloat(valueOnDate.toFixed(2)));
+    valueOnDate = 0;
+  }
+
+  for (let i = 0; i < dates_1m.length; i++) {
+    let date = new Date(dates_1m[i]);
+    let portfOnDate = getHoldingsOnDate(date, portfolio.transactions);
+    if (Object.keys(portfOnDate).length) {
+      for (let stock in portfOnDate) {
+        if (!(stock in histPrices)) {
+          histPrices[stock] = await getHistoricalPrices(stock);
+        }
+        let price = getPriceOnDate(histPrices[stock], dates_1m[i]);
+        valueOnDate += price * parseInt(portfOnDate[stock]);
+      }
+    }
+    history["1M"].dates.push(dates_1m[i]);
+    history["1M"].values.push(parseFloat(valueOnDate.toFixed(2)));
+    valueOnDate = 0;
+  }
+  //   console.log(history);
   ctx.body = { history };
 };
 
