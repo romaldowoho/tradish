@@ -8,8 +8,7 @@
         <h1>${{lastPrice}}</h1>
       </span>
     </div>
-    <!-- <div v-if="this.$store.getters.GET_TOTAL_EQUITY">{{this.$store.getters.GET_TOTAL_EQUITY}}</div> -->
-    <Card style="height: 300px; width: 600px; backgroundColor: inherit;" dis-hover>
+    <Card style="height: 300px; width: 610px; backgroundColor: inherit;" dis-hover>
       <div>
         <canvas id="myChart"></canvas>
       </div>
@@ -20,7 +19,8 @@
         <TabPane label="1M" name="1M"></TabPane>
         <TabPane label="1Y" name="1Y"></TabPane>
         <TabPane label="5Y" name="5Y"></TabPane>
-        <TabPane label="MAX" name="MAX"></TabPane>
+        <TabPane :disabled="true"></TabPane>
+        <TabPane :disabled="true"></TabPane>
         <TabPane :disabled="true"></TabPane>
         <TabPane :disabled="true"></TabPane>
         <TabPane :disabled="true"></TabPane>

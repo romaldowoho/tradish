@@ -4,8 +4,9 @@ const moment = require("moment");
 const axios = require("axios");
 const config = require("../../../config");
 
-const getHoldingsOnDate = function(date, transactions) {
+const getHoldingsAndBalanceOnDate = function(date, transactions) {
   let portf = {};
+  let balance;
   for (let i = 0; i < transactions.length; i++) {
     let trans = transactions[i];
     let curDate = new Date(trans.date);
@@ -22,9 +23,10 @@ const getHoldingsOnDate = function(date, transactions) {
           delete portf[trans.symbol];
         }
       }
+      balance = trans.currBalance;
     } else break;
   }
-  return portf;
+  return { portf, balance };
 };
 
 const getDates = function(period) {
@@ -119,15 +121,15 @@ const getHistoricalPrices = async function(symbol) {
 module.exports.getHistory = async function(ctx, next) {
   let portfolio = await Portfolio.findOne({ user: ctx.user });
   let history = {
-    "5Y": {
+    month_data: {
       dates: [],
       values: []
     },
-    "1Y": {
+    year_data: {
       dates: [],
       values: []
     },
-    "1M": {
+    five_year_data: {
       dates: [],
       values: []
     }
@@ -141,7 +143,12 @@ module.exports.getHistory = async function(ctx, next) {
 
   for (let i = 0; i < dates_5y.length; i++) {
     let date = new Date(dates_5y[i]);
-    let portfOnDate = getHoldingsOnDate(date, portfolio.transactions);
+    let portfAndBalance = getHoldingsAndBalanceOnDate(
+      date,
+      portfolio.transactions
+    );
+    let portfOnDate = portfAndBalance.portf;
+    let balance = portfAndBalance.balance;
     if (Object.keys(portfOnDate).length) {
       for (let stock in portfOnDate) {
         if (!(stock in histPrices)) {
@@ -151,14 +158,21 @@ module.exports.getHistory = async function(ctx, next) {
         valueOnDate += price * parseInt(portfOnDate[stock]);
       }
     }
-    history["5Y"].dates.push(dates_5y[i]);
-    history["5Y"].values.push(parseFloat(valueOnDate.toFixed(2)));
+    history.five_year_data.dates.push(dates_5y[i]);
+    history.five_year_data.values.push(
+      +(balance + valueOnDate).toFixed(2) || 50000
+    );
     valueOnDate = 0;
   }
 
   for (let i = 0; i < dates_1y.length; i++) {
     let date = new Date(dates_1y[i]);
-    let portfOnDate = getHoldingsOnDate(date, portfolio.transactions);
+    let portfAndBalance = getHoldingsAndBalanceOnDate(
+      date,
+      portfolio.transactions
+    );
+    let portfOnDate = portfAndBalance.portf;
+    let balance = portfAndBalance.balance;
     if (Object.keys(portfOnDate).length) {
       for (let stock in portfOnDate) {
         if (!(stock in histPrices)) {
@@ -168,14 +182,19 @@ module.exports.getHistory = async function(ctx, next) {
         valueOnDate += price * parseInt(portfOnDate[stock]);
       }
     }
-    history["1Y"].dates.push(dates_1y[i]);
-    history["1Y"].values.push(parseFloat(valueOnDate.toFixed(2)));
+    history.year_data.dates.push(dates_1y[i]);
+    history.year_data.values.push(+(balance + valueOnDate).toFixed(2) || 50000);
     valueOnDate = 0;
   }
 
   for (let i = 0; i < dates_1m.length; i++) {
     let date = new Date(dates_1m[i]);
-    let portfOnDate = getHoldingsOnDate(date, portfolio.transactions);
+    let portfAndBalance = getHoldingsAndBalanceOnDate(
+      date,
+      portfolio.transactions
+    );
+    let portfOnDate = portfAndBalance.portf;
+    let balance = portfAndBalance.balance;
     if (Object.keys(portfOnDate).length) {
       for (let stock in portfOnDate) {
         if (!(stock in histPrices)) {
@@ -185,8 +204,10 @@ module.exports.getHistory = async function(ctx, next) {
         valueOnDate += price * parseInt(portfOnDate[stock]);
       }
     }
-    history["1M"].dates.push(dates_1m[i]);
-    history["1M"].values.push(parseFloat(valueOnDate.toFixed(2)));
+    history.month_data.dates.push(dates_1m[i]);
+    history.month_data.values.push(
+      +(balance + valueOnDate).toFixed(2) || 50000
+    );
     valueOnDate = 0;
   }
   //   console.log(history);

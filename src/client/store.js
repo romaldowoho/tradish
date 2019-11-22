@@ -15,17 +15,31 @@ export default new Vuex.Store({
       watchlist: [],
       transactions: []
     },
+    chart_data: {
+      month_data: {
+        values: [],
+        dates: []
+      },
+      year_data: {
+        values: [],
+        dates: []
+      },
+      five_year_data: {
+        values: [],
+        dates: []
+      }
+    },
     totalEquity: null
   },
   getters: {
-    IS_LOGGEDIN: state => {
-      return state.user.isLoggedIn;
-    },
     GET_USER: state => {
       return state.user;
     },
     GET_TOTAL_EQUITY: state => {
       return state.totalEquity;
+    },
+    GET_CHART_DATA: state => {
+      return state.chart_data;
     }
   },
   mutations: {
@@ -38,8 +52,8 @@ export default new Vuex.Store({
     SET_TOTAL_EQUITY: (state, payload) => {
       state.totalEquity = payload;
     },
-    SET_LOGGED_STATE: (state, payload) => {
-      state.user.isLoggedIn = payload;
+    SET_CHART_DATA: (state, payload) => {
+      state.chart_data = payload;
     }
   },
   actions: {
@@ -49,8 +63,8 @@ export default new Vuex.Store({
     SET_TOTAL_EQUITY: (context, payload) => {
       context.commit("SET_TOTAL_EQUITY", payload);
     },
-    SET_LOGGED_STATE: (context, payload) => {
-      context.commit("SET_LOGGED_STATE", payload);
+    SET_CHART_DATA: (context, payload) => {
+      context.commit("SET_CHART_DATA", payload);
     }
   }
 });

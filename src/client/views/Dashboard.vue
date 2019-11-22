@@ -1,7 +1,7 @@
 <template>
   <div class="dashboard-wrap">
     <div class="chart">
-      <Chart />
+      <ChartDashboard />
     </div>
     <div class="right-card">
       <Portfolio />
@@ -10,11 +10,11 @@
 </template>
 
 <script>
-import Chart from "./../components/chart";
+import ChartDashboard from "./../components/chart-dashboard";
 import Portfolio from "./../components/portfolio";
 export default {
   components: {
-    Chart,
+    ChartDashboard,
     Portfolio
   },
   methods: {},

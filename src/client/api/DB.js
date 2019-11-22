@@ -86,12 +86,11 @@ export default {
         console.log({ err });
       });
   },
-  getPortfolioHistory: async function(ctx, period) {
+  getPortfolioHistory: async function(ctx) {
     let data;
     await axios
       .post("http://localhost:3000/api/getHistory", {
-        Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
-        period
+        Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`
       })
       .then(res => {
         console.log(res.data.history);
