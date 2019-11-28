@@ -56,9 +56,10 @@ export default {
       chart: null,
       day_data: {
         values: [],
-        dates: []
+        dates: [],
+        lastCall: new Date()
       },
-      activeTab: "1M",
+      activeTab: "1D",
       chartColor: "rgb(19, 189, 137)",
       loaded: true
     };
@@ -79,9 +80,22 @@ export default {
       this.chart.data.datasets[0].borderColor = val;
       this.chart.update();
     },
-    activeTab: function(val) {
-      if (val == "1M") {
-        console.log(this.chart_data);
+    activeTab: async function(val) {
+      if (val == "1D") {
+        let date = new Date();
+        let timePassed = date.getTime() - this.day_data.lastCall.getTime();
+        let fiveMins = 30;
+        if (timePassed > fiveMins) {
+          let data = await IEX.getDayData(this);
+          this.day_data.values = data.values;
+          this.day_data.dates = data.dates;
+          this.day_data.lastCall = new Date();
+
+          this.chart.data.datasets[0].data = this.day_data.values;
+          this.chart.data.labels = this.day_data.dates;
+          this.chart.update();
+        }
+      } else if (val == "1M") {
         this.chart.data.datasets[0].data = this.chart_data.month_data.values;
         this.chart.data.labels = this.chart_data.month_data.dates;
         this.chart.update();

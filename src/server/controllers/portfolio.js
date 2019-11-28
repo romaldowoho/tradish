@@ -49,7 +49,7 @@ const getDates = function(period) {
         if (startDate.day() > 0 && startDate.day() < 6) {
           dates.push(moment(startDate).format("YYYY-MM-DD"));
         }
-        startDate = moment(startDate).add(7, "days");
+        startDate = moment(startDate).add(6, "days");
       }
       break;
     case "5Y":
@@ -58,7 +58,7 @@ const getDates = function(period) {
         if (startDate.day() > 0 && startDate.day() < 6) {
           dates.push(moment(startDate).format("YYYY-MM-DD"));
         }
-        startDate = moment(startDate).add(14, "days");
+        startDate = moment(startDate).add(15, "days");
       }
       break;
   }
@@ -138,6 +138,7 @@ module.exports.getHistory = async function(ctx, next) {
   let histPrices = {};
   const dates_5y = getDates("5Y");
   const dates_1y = getDates("1Y");
+  console.log("1Y", dates_1y);
   const dates_1m = getDates("1M");
   let valueOnDate = 0;
 

@@ -46,13 +46,7 @@ export default {
     if (this.peers.length > 6) {
       this.peers.splice(6);
     }
-    this.peersInfo = await IEX.getStocksData([
-      "VSLR",
-      "SPWR",
-      "FSLR",
-      "TSLA",
-      "T"
-    ]);
+    this.peersInfo = await IEX.getStocksData(this.peers);
   },
   methods: {
     percentColor(val) {
@@ -90,8 +84,8 @@ export default {
   margin-bottom: 30px;
 }
 .peer-card {
-  height: 120px;
-  width: 150px;
+  height: 150px;
+  width: 200px;
   margin: 10px 40px 0 0px;
   box-shadow: -0.5px -0.5px 5px #bebdbd;
   box-shadow: 0.5px 0.5px 5px #bebdbd;

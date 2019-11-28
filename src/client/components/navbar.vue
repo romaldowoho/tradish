@@ -7,7 +7,7 @@
       <div class="search">
         <searchBar v-if="['login','register','email','confirmed'].indexOf($route.name) === -1 " />
       </div>
-      <div class="total-balance">
+      <div class="total-balance" v-if="isLogged">
         <div>
           <img class="coin" src="./../../../public/dollar.png" />
         </div>
@@ -20,17 +20,17 @@
       <!-- <div class="links-div" v-if="this.$cookie.get('tradish-session')">
         <router-link class="link" to @click.native="logout">Log out</router-link>
       </div>-->
-      <div class="links-div">
+      <div class="links-div" v-if="isLogged">
         <div class="link">
           <Dropdown trigger="click">
             <Icon size="30" type="md-menu"></Icon>
             <DropdownMenu slot="list" style="padding: 0; font-weight: bold;">
-              <DropdownItem style="margin: 0">
+              <DropdownItem style="margin:0; font-weight: bolder; color: rgb(19, 189, 137);">
                 {{this.$store.getters.GET_USER.username}}
                 <Icon type="ios-arrow-forward" />
               </DropdownItem>
               <DropdownItem style="padding: 0; font-size: 30px; width: 100px;">
-                <Divider style="padding: 0; margin: 0; width: 100px;" />
+                <!-- <Divider style="padding: 0; margin: 0; width: 100%;" /> -->
               </DropdownItem>
               <DropdownItem>Settings</DropdownItem>
               <DropdownItem>
@@ -58,6 +58,11 @@ export default {
   },
   data() {
     return {};
+  },
+  computed: {
+    isLogged() {
+      return this.$cookie.get("tradish-session") ? 1 : 0;
+    }
   },
   methods: {
     goHome() {

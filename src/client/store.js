@@ -53,6 +53,7 @@ export default new Vuex.Store({
       state.totalEquity = payload;
     },
     SET_CHART_DATA: (state, payload) => {
+      console.log("chart data", payload);
       state.chart_data = payload;
     }
   },

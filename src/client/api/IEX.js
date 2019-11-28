@@ -69,6 +69,66 @@ export default {
         : "rgb(213, 86, 54)";
     return [prices, dates, color];
   },
+  getDayData: async function(ctx) {
+    let portfolio = ctx.$store.getters.GET_USER.holdings;
+    if (portfolio.length == 0) return null;
+    let dates = [];
+    let values = [];
+    for (let i = 0; i < portfolio.length; i++) {
+      let symbol = portfolio[i].symbol;
+      let quantity = portfolio[i].quantity;
+      await axios
+        .get(
+          `https://cloud.iexapis.com/stable/stock/${symbol}/chart/1d?token=${config.IEX.public_token}`
+        )
+        .then(res => {
+          if (values.length == 0) {
+            for (let j = 0; j < res.data.length; j++) {
+              if (res.data[j].average) {
+                dates.push(res.data[j]["label"] + " ET");
+                let val = res.data[j]["average"] * parseInt(quantity);
+                values.push(val);
+              } else {
+                dates.push(res.data[j]["label"] + " ET");
+                values.push(0);
+              }
+            }
+          } else {
+            for (let j = 0; j < res.data.length; j++) {
+              if (res.data[j].average) {
+                let val = res.data[j]["average"] * parseInt(quantity);
+                values[j] += val;
+              } else {
+                let k = j - 1;
+                while (k > -1) {
+                  if (res.data[k].average) {
+                    let val = res.data[k]["average"] * parseInt(quantity);
+                    values[j] += val;
+                    break;
+                  }
+                  k--;
+                }
+              }
+            }
+          }
+        })
+        .catch(err => {
+          console.log(err);
+          return;
+        });
+    }
+    values[0] = +values[0].toFixed(2);
+    for (let i = 1; i < values.length; i++) {
+      values[i] = +values[i].toFixed(2);
+      let diff = Math.abs(values[i] - values[i - 1]);
+      if (diff / values[i - 1] > 0.15) {
+        values.splice(i, 1);
+        dates.splice(i, 1);
+        i--;
+      }
+    }
+    return { values, dates };
+  },
   getStocksData: async function(list) {
     let symbols = [];
     if (typeof list[0] == "object") {

@@ -1,71 +1,72 @@
 <template>
   <div class="wrap">
-    <div v-if="emptyFieldsError">
-      <Alert
-        type="error"
-        show-icon
-        closable
-        v-on:on-close="resetEmptyFieldsError"
-      >All fields are required</Alert>
-    </div>
-
-    <div class="input">
-      First Name:
-      <Input v-model="fname" />
-    </div>
-
-    <div class="input">
-      Last Name:
-      <Input v-model="lname" />
-    </div>
-
-    <div class="input">
-      Username:
-      <Input v-model="username" />
-    </div>
-
-    <div class="input">
-      <div v-if="emailExistsWarning">
-        <Alert type="warning" show-icon closable>
-          Email already exists
-          <span slot="close">
-            <a href="/login">Log In</a>
-          </span>
-        </Alert>
-      </div>
-      <div class="input">
-        <div v-if="emailFormatError">
-          <Alert
-            type="error"
-            show-icon
-            closable
-            v-on:on-close="resetEmailFormatError"
-          >Invalid email format</Alert>
-        </div>
-      </div>Email:
-      <Input v-model="email" />
-    </div>
-
-    <div class="input">
-      <div v-if="passNoMatchError">
+    <Card class="input-card">
+      <div v-if="emptyFieldsError">
         <Alert
           type="error"
           show-icon
           closable
-          v-on:on-close="resetPassNoMatchError"
-        >Passwords do not match</Alert>
-      </div>Password:
-      <Input type="password" :icon="passMatch ? icon : null" v-model="pass1" />
-    </div>
+          v-on:on-close="resetEmptyFieldsError"
+        >All fields are required</Alert>
+      </div>
 
-    <div class="input">
-      Confirm password:
-      <Input type="password" :icon="passMatch ? icon : null" v-model="pass2" />
-    </div>
+      <div class="input">
+        First Name:
+        <Input v-model="fname" />
+      </div>
 
-    <div class="button">
-      <Button type="success" @click="handleSubmit">Sign Up</Button>
-    </div>
+      <div class="input">
+        Last Name:
+        <Input v-model="lname" />
+      </div>
+
+      <div class="input">
+        Username:
+        <Input v-model="username" />
+      </div>
+
+      <div class="input">
+        <div v-if="emailExistsWarning">
+          <Alert type="warning" show-icon closable>
+            Email already exists
+            <span slot="close">
+              <a href="/login">Log In</a>
+            </span>
+          </Alert>
+        </div>
+        <div>
+          <div v-if="emailFormatError">
+            <Alert
+              type="error"
+              show-icon
+              closable
+              v-on:on-close="resetEmailFormatError"
+            >Invalid email format</Alert>
+          </div>
+        </div>Email:
+        <Input v-model="email" />
+      </div>
+      <div class="input">
+        <div v-if="passNoMatchError">
+          <Alert
+            type="error"
+            show-icon
+            closable
+            v-on:on-close="resetPassNoMatchError"
+          >Passwords do not match</Alert>
+        </div>Password:
+        <Input type="password" :icon="passMatch ? icon : null" v-model="pass1" />
+      </div>
+
+      <div class="input">
+        Confirm password:
+        <Input type="password" :icon="passMatch ? icon : null" v-model="pass2" />
+      </div>
+
+      <div class="button">
+        <Button type="success" @click="handleSubmit">Sign Up</Button>
+      </div>
+    </Card>
   </div>
 </template>
 
@@ -164,9 +165,15 @@ export default {
 .wrap {
   display: block;
 }
+.input-card {
+  width: 500px;
+  height: 100%;
+  margin: 0 auto;
+}
 .input {
   width: 300px;
   margin: 0 auto;
+  padding-top: 10px;
 }
 .button {
   padding: 10px;

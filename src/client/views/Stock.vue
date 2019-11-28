@@ -97,6 +97,7 @@ export default {
 }
 .news {
   position: relative;
+  height: 900px;
   margin-top: 80px;
   left: 8%;
 }

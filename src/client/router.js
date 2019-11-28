@@ -4,7 +4,7 @@ import Home from "./views/Home.vue";
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   mode: "history",
   base: process.env.BASE_URL,
   routes: [
@@ -55,3 +55,19 @@ export default new Router({
     }
   ]
 });
+
+const isAuthenticated = () => {
+  let ck = document.cookie.indexOf("tradish-session");
+  return ck == -1 ? 0 : 1;
+};
+
+router.beforeEach((to, from, next) => {
+  if (to.path !== "/login" && to.path !== "/register") {
+    if (!isAuthenticated()) next("/login");
+    else next();
+  } else if (to.path == "/register" && isAuthenticated()) {
+    next(from);
+  } else next();
+});
+
+export default router;

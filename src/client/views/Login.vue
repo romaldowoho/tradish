@@ -1,21 +1,23 @@
 <template>
   <div>
-    <div class="input">
-      <div v-if="validationErr">
-        <Alert type="error" show-icon closable v-on:on-close="removeErr">{{ errMessage }}</Alert>
+    <Card class="input-card">
+      <div class="input">
+        <div v-if="validationErr">
+          <Alert type="error" show-icon closable v-on:on-close="removeErr">{{ errMessage }}</Alert>
+        </div>
       </div>
-    </div>
-    <div class="input">
-      Email:
-      <Input v-model="email" />
-    </div>
-    <div class="input">
-      Password:
-      <Input type="password" v-model="password" />
-    </div>
-    <div class="button">
-      <Button type="success" @click="handleSubmit">Login</Button>
-    </div>
+      <div class="input">
+        Email
+        <Input v-model="email" />
+      </div>
+      <div class="input">
+        Password
+        <Input type="password" v-model="password" />
+      </div>
+      <div class="button">
+        <Button type="success" @click="handleSubmit">Login</Button>
+      </div>
+    </Card>
   </div>
 </template>
 
@@ -52,7 +54,8 @@ export default {
           }
         })
         .catch(err => {
-          this.errMessage = err.response.data.error;
+          this.errMessage =
+            err.response.data.error.message || err.response.data.error;
           this.validationErr = true;
           console.log(err);
         });
@@ -65,8 +68,15 @@ export default {
 </script>
 
 <style scoped>
+.input-card {
+  width: 500px;
+  height: 300px;
+  margin: 0 auto;
+}
 .input {
   width: 300px;
+  display: inline-block;
+  padding-top: 10px;
   margin: 0 auto;
 }
 .button {
