@@ -4,8 +4,9 @@ module.exports = {
     port: 8080
   },
   pages: {
-    app: {
-      entry: "./main.js"
+    index: {
+      entry: "main.js"
     }
-  }
+  },
+  lintOnSave: process.env.NODE_ENV !== "production"
 };
