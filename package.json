@@ -7,6 +7,7 @@
   "resolutions": {
     "eslint-loader": "2.1.2"
   },
+  "parser": "babel-eslint",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve src/client/main.js",
