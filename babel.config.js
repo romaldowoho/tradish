@@ -1,3 +1,2 @@
-module.exports = {
-  presets: ["@vue/app"]
-};
+/* eslint-disable parser */
+export const presets = ["@vue/app"];
