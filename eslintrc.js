@@ -1,6 +1,7 @@
+/* eslint-disable parser */
 module.exports = {
-  parser: "babel-eslint",
   parserOptions: {
+    parser: "babel-eslint",
     ecmaVersion: 7,
     sourceType: "module",
     ecmaFeatures: {
