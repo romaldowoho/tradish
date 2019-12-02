@@ -1,5 +1,5 @@
 module.exports = {
   entry: {
-    main: "./src/client/main.js"
+    app: "./src/client/main.js"
   }
 };
