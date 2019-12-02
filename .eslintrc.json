@@ -2,10 +2,9 @@
   "rules": {
     "semi": ["error", "always"],
     "quotes": ["error", "double"],
-    "parser": "babel-eslint"
+    "parser": [0, "always"]
   },
   "parserOptions": {
-    "parser": [1, "always"],
     "ecmaVersion": 6,
     "sourceType": "module",
     "ecmaFeatures": {
