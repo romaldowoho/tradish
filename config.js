@@ -1,4 +1,3 @@
-/* eslint-disable parser */
 module.exports = {
   mongodb: {
     uri: "mongodb://localhost/tradish"
