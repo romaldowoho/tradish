@@ -3,6 +3,7 @@ module.exports = {
     host: "localhost",
     port: 8080
   },
+  publicPath: "/dist/",
   pages: {
     index: {
       entry: "main.js"
