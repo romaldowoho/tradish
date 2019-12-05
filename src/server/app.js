@@ -16,7 +16,7 @@ const handleMongooseValidationError = require("./libs/validationErrors");
 const app = new Koa();
 
 app.use(cors());
-app.use(require("koa-static")("../../public"));
+app.use(require("koa-static")("../../dist"));
 app.use(require("koa-bodyparser")());
 
 app.use(async (ctx, next) => {
