@@ -4,7 +4,6 @@
     // add more generic rulesets here, such as:
     "plugin:vue/base"
   ],
-  //   "parser": "babel-eslint",
   "rules": {
     "strict": 0,
     "semi": "error"
