@@ -2,6 +2,7 @@ const Koa = require("koa");
 const Router = require("koa-router");
 const uuid = require("uuid/v4");
 const cors = require("@koa/cors");
+const serve = require("koa-static");
 const Session = require("./models/Session");
 const registration = require("./controllers/register");
 const login = require("./controllers/login");
@@ -16,7 +17,7 @@ const handleMongooseValidationError = require("./libs/validationErrors");
 const app = new Koa();
 
 app.use(cors());
-app.use(require("koa-static")("../../dist"));
+app.use(serve("../../dist/index.html"));
 app.use(require("koa-bodyparser")());
 
 app.use(async (ctx, next) => {
