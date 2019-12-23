@@ -3,7 +3,9 @@
     <Card class="input-card">
       <div class="input">
         <div v-if="validationErr">
-          <Alert type="error" show-icon closable v-on:on-close="removeErr">{{ errMessage }}</Alert>
+          <Alert type="error" show-icon closable v-on:on-close="removeErr">{{
+            errMessage
+          }}</Alert>
         </div>
       </div>
       <div class="input">
@@ -40,7 +42,7 @@ export default {
   methods: {
     handleSubmit() {
       axios
-        .post("http://localhost:3000/api/login", {
+        .post("/api/login", {
           email: this.email,
           password: this.password
         })
