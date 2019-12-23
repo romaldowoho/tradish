@@ -91,4 +91,7 @@ router.post("/handleWatchlist", mustBeAuthenticated, handleWatchlist);
 
 app.use(router.routes());
 
-app.listen(process.env.PORT || 3000);
+let port = process.env.PORT || 3000;
+app.listen(port, null, () => {
+  console.log("Listening on port " + port);
+});

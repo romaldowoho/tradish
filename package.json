@@ -12,7 +12,7 @@
   "scripts": {
     "start": "node src/server/app.js",
     "serve": "vue-cli-service serve src/client/main.js",
-    "build": "vue-cli-service build",
+    "heroku-postbuild": "vue-cli-service build",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
   },
