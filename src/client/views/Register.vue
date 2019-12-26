@@ -7,7 +7,8 @@
           show-icon
           closable
           v-on:on-close="resetEmptyFieldsError"
-        >All fields are required</Alert>
+          >All fields are required</Alert
+        >
       </div>
 
       <div class="input">
@@ -41,9 +42,11 @@
               show-icon
               closable
               v-on:on-close="resetEmailFormatError"
-            >Invalid email format</Alert>
+              >Invalid email format</Alert
+            >
           </div>
-        </div>Email:
+        </div>
+        Email:
         <Input v-model="email" />
       </div>
       <div class="input">
@@ -53,14 +56,24 @@
             show-icon
             closable
             v-on:on-close="resetPassNoMatchError"
-          >Passwords do not match</Alert>
-        </div>Password:
-        <Input type="password" :icon="passMatch ? icon : null" v-model="pass1" />
+            >Passwords do not match</Alert
+          >
+        </div>
+        Password:
+        <Input
+          type="password"
+          :icon="passMatch ? icon : null"
+          v-model="pass1"
+        />
       </div>
 
       <div class="input">
         Confirm password:
-        <Input type="password" :icon="passMatch ? icon : null" v-model="pass2" />
+        <Input
+          type="password"
+          :icon="passMatch ? icon : null"
+          v-model="pass2"
+        />
       </div>
 
       <div class="button">
@@ -106,7 +119,7 @@ export default {
       }
       if (err) return;
       axios
-        .post("http://localhost:3000/api/register", {
+        .post("/api/register", {
           firstName: this.fname,
           lastName: this.lname,
           username: this.username,
