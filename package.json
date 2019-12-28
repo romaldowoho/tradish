@@ -1,7 +1,7 @@
 {
   "name": "tradish",
   "version": "0.1.0",
-  "homepage": "https://tradish.herokuapp.com",
+  "homepage": "https://tradish.herokuapp.com/tradish",
   "engines": {
     "node": "12.2.0"
   },
@@ -13,6 +13,7 @@
   "scripts": {
     "start": "node src/server/app.js",
     "serve": "vue-cli-service serve src/client/main.js",
+    "heroku-postbuild": "node src/server/app.js",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
   },
