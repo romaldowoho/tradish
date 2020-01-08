@@ -1,6 +1,7 @@
 module.exports = {
   mongodb: {
-    uri: "mongodb://localhost/tradish"
+    uri:
+      "mongodb+srv://romaldowoho:4pL_@V2J52hfkiF@cluster0-nmbbl.mongodb.net/test?retryWrites=true&w=majority"
   },
   crypto: {
     iterations: process.env.NODE_ENV === "test" ? 1 : 12000,
