@@ -1,6 +1,6 @@
 module.exports = {
   mongodb: {
-    uri: process.env.MONGODB_URI
+    uri: "mongodb://localhost/tradish"
   },
   crypto: {
     iterations: process.env.NODE_ENV === "test" ? 1 : 12000,

@@ -12,7 +12,8 @@
   "proxy": "http://localhost:3000",
   "scripts": {
     "start": "node src/server/app.js",
-    "serve": "vue-cli-service serve src/client/main.js",
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
     "heroku-postbuild": "node src/server/app.js",
     "lint": "vue-cli-service lint",
     "test:unit": "vue-cli-service test:unit"
