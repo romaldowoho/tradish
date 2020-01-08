@@ -23,12 +23,12 @@ module.exports.register = async (ctx, next) => {
   await user.setPassword(ctx.request.body.password);
   await user.save();
 
-  await sendMail({
-    to: user.email,
-    subject: "Confirm your email",
-    locals: { token: verificationToken },
-    template: "emailConfirmation"
-  });
+  // await sendMail({
+  //   to: user.email,
+  //   subject: "Confirm your email",
+  //   locals: { token: verificationToken },
+  //   template: "emailConfirmation"
+  // });
 
   ctx.body = { status: "ok" };
 };
