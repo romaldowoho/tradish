@@ -1,22 +1,28 @@
 <template>
   <div class="terminal-wrap">
-    <Card class="terminal" dis-hover>
+    <Card class="terminal">
       <!-- <p slot="title">Buy {{info.symbol}}</p> -->
       <p slot="title" class="title">
         <Tabs :animated="false" v-model="activeTab">
-          <eyeButton v-if="!readyToOrder && !ownShare()" slot="extra" :symbol="this.info.symbol" />
+          <eyeButton
+            v-if="!readyToOrder && !ownShare()"
+            slot="extra"
+            :symbol="this.info.symbol"
+          />
           <TabPane
             v-if="!readyToOrder"
             :label="tabBuyLabel"
             name="Buy"
             :index="1"
-          >${{fundsAvailable | formatNumber}} available</TabPane>
+            >${{ fundsAvailable | formatNumber }} available</TabPane
+          >
           <TabPane
             v-if="ownShare() && !readyToOrder"
             :label="tabSellLabel"
             name="Sell"
             :index="2"
-          >{{sharesOwned}} available to sell</TabPane>
+            >{{ sharesOwned }} available to sell</TabPane
+          >
         </Tabs>
       </p>
 
@@ -42,27 +48,34 @@
                 <Icon type="ios-information-circle-outline" />
               </a>
               <div slot="title">This is the latest reported price</div>
-              <div slot="content">Your order will be processed using the best bid/ask price from IEX</div>
+              <div slot="content">
+                Your order will be processed using the best bid/ask price from
+                IEX
+              </div>
             </Poptip>
           </div>
-          <div class="row-value">${{info.price}}</div>
+          <div class="row-value">${{ info.price }}</div>
         </div>
         <div class="terminal-row">
-          <div class="row-name">Estimated {{costOrCredit}}</div>
-          <div class="row-value">${{totalCost}}</div>
+          <div class="row-name">Estimated {{ costOrCredit }}</div>
+          <div class="row-value">${{ totalCost }}</div>
         </div>
         <div class="button">
-          <Button type="success" size="large" @click="orderReview">Review Order</Button>
+          <Button type="success" size="large" @click="orderReview"
+            >Review Order</Button
+          >
         </div>
       </div>
 
       <div v-if="readyToOrder && !ordering" class="order-window">
-        <div
-          class="terminal-row"
-          style="font-weight: bold;"
-        >Place a market order to {{this.activeTab.toLowerCase()}} {{totalShares}} {{shareSpelling}} of {{info.symbol}}</div>
+        <div class="terminal-row" style="font-weight: bold;">
+          Place a market order to {{ this.activeTab.toLowerCase() }}
+          {{ totalShares }} {{ shareSpelling }} of {{ info.symbol }}
+        </div>
         <div class="button-order">
-          <Button type="success" size="large" @click="orderPlace">Place Order</Button>
+          <Button type="success" size="large" @click="orderPlace"
+            >Place Order</Button
+          >
         </div>
         <div class="button-cancel">
           <Button type="error" size="large" @click="orderReset">Cancel</Button>
@@ -78,7 +91,6 @@
 </template>
 
 <script>
-import axios from "axios";
 import DB from "./../api/DB";
 import IEX from "./../api/IEX";
 import eyeButton from "./../components/button-watchlist";
@@ -240,7 +252,7 @@ export default {
 
 <style scoped>
 .terminal-wrap {
-  width: 60%;
+  width: 300px;
 }
 .terminal {
   width: 100%;

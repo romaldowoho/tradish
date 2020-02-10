@@ -10,11 +10,11 @@
       </div>
       <div class="input">
         Email
-        <Input v-model="email" />
+        <Input @on-enter="handleSubmit" v-model="email" />
       </div>
       <div class="input">
         Password
-        <Input type="password" v-model="password" />
+        <Input @on-enter="handleSubmit" type="password" v-model="password" />
       </div>
       <div class="button">
         <Button type="success" @click="handleSubmit">Login</Button>
@@ -25,6 +25,7 @@
 
 <script>
 import axios from "axios";
+axios.defaults.baseURL = "https://tradish-server.herokuapp.com";
 export default {
   data() {
     return {
@@ -74,6 +75,7 @@ export default {
   width: 500px;
   height: 300px;
   margin: 0 auto;
+  margin-top: 5%;
 }
 .input {
   width: 300px;
@@ -82,6 +84,7 @@ export default {
   margin: 0 auto;
 }
 .button {
+  margin-top: 20px;
   padding: 10px;
 }
 </style>

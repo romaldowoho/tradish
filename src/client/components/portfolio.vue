@@ -1,8 +1,13 @@
 <template>
-  <div class="terminal-wrap">
+  <div class="portfolio-wrap">
     <Card class="stocks" :padding="0">
       <div>
-        <Menu mode="horizontal" @on-select="activateTab" active-name="portfolio" class="menu">
+        <Menu
+          mode="horizontal"
+          @on-select="activateTab"
+          active-name="portfolio"
+          class="menu"
+        >
           <MenuItem class="menu-item" name="portfolio">Portfolio</MenuItem>
           <MenuItem class="menu-item" name="watchlist">Watchlist</MenuItem>
         </Menu>
@@ -15,22 +20,28 @@
         >
           <div class="cell">
             <div class="cell-left">
-              <div class="cell-left-top">{{symbol.quote.symbol}}</div>
-              <div
-                class="cell-left-bottom"
-              >{{shareQuantity(symbol.quote.symbol)}} {{shareSpelling(shareQuantity(symbol.quote.symbol))}}</div>
+              <div class="cell-left-top">{{ symbol.quote.symbol }}</div>
+              <div class="cell-left-bottom">
+                {{ shareQuantity(symbol.quote.symbol) }}
+                {{ shareSpelling(shareQuantity(symbol.quote.symbol)) }}
+              </div>
             </div>
             <div class="chart-div">
               <keep-alive>
-                <ChartLight :id="symbol.quote.symbol" :symbol="symbol.quote.symbol" />
+                <ChartLight
+                  :id="symbol.quote.symbol"
+                  :symbol="symbol.quote.symbol"
+                />
               </keep-alive>
             </div>
             <div class="cell-right">
-              <div class="cell-right-top">${{symbol.quote.latestPrice}}</div>
+              <div class="cell-right-top">${{ symbol.quote.latestPrice }}</div>
               <div
                 class="cell-right-bottom"
-                :style="{color: percentColor(symbol.quote.changePercent)}"
-              >{{symbol.quote.changePercent | toFixed}}%</div>
+                :style="{ color: percentColor(symbol.quote.changePercent) }"
+              >
+                {{ symbol.quote.changePercent | toFixed }}%
+              </div>
             </div>
           </div>
         </div>
@@ -42,16 +53,21 @@
           @click="handleClick(symbol.quote.symbol)"
         >
           <div class="cell">
-            <div class="cell-left-watchlist">{{symbol.quote.symbol}}</div>
+            <div class="cell-left-watchlist">{{ symbol.quote.symbol }}</div>
             <div class="chart-div">
-              <ChartLight :id="symbol.quote.symbol" :symbol="symbol.quote.symbol" />
+              <ChartLight
+                :id="symbol.quote.symbol"
+                :symbol="symbol.quote.symbol"
+              />
             </div>
             <div class="cell-right">
-              <div class="cell-right-top">${{symbol.quote.latestPrice}}</div>
+              <div class="cell-right-top">${{ symbol.quote.latestPrice }}</div>
               <div
                 class="cell-right-bottom"
-                :style="{color: percentColor(symbol.quote.changePercent)}"
-              >{{symbol.quote.changePercent | toFixed}}%</div>
+                :style="{ color: percentColor(symbol.quote.changePercent) }"
+              >
+                {{ symbol.quote.changePercent | toFixed }}%
+              </div>
             </div>
           </div>
         </div>
@@ -138,15 +154,15 @@ export default {
 </script>
 
 <style scoped>
-.terminal-wrap {
+.portfolio-wrap {
   position: absolute;
-  width: 50%;
+  width: 287px;
   -ms-overflow-style: none; /* IE 10+ */
   scrollbar-width: none; /* Firefox  */
 }
 .stocks {
   width: 100%;
-  height: 500px;
+  height: 400px;
   padding: 0;
   overflow: auto;
   background-color: inherit;

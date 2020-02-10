@@ -57,14 +57,15 @@ const router = new Router({
 });
 
 const isAuthenticated = () => {
-  let ck = document.cookie.indexOf("tradish-session");
-  return ck == -1 ? 0 : 1;
+  return document.cookie.indexOf("tradish-session") !== -1;
 };
 
 router.beforeEach((to, from, next) => {
   if (to.path !== "/login" && to.path !== "/register") {
-    if (!isAuthenticated()) next("/login");
-    else next();
+    if (!isAuthenticated() && to.path !== "/") next("/login");
+    else {
+      next();
+    }
   } else if (to.path == "/register" && isAuthenticated()) {
     next(from);
   } else next();

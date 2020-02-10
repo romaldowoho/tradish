@@ -37,16 +37,26 @@ export default {
   display: flex;
   position: relative;
   justify-content: center;
-  width: 40%;
-  left: 8%;
+  width: 864px;
   margin-top: 5%;
 }
 .right-card {
   display: flex;
   position: relative;
   justify-content: center;
-  margin-top: 7%;
-  width: 40%;
-  right: 8%;
+  margin-top: 7.5%;
+  width: 576px;
+}
+@media (max-width: 1024px) {
+  .dashboard-wrap {
+    flex-wrap: wrap;
+  }
+  .chart {
+    width: 100%;
+  }
+  .right-card {
+    width: 100%;
+    margin-top: 0;
+  }
 }
 </style>

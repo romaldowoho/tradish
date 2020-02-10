@@ -12,18 +12,18 @@
       </div>
 
       <div class="input">
-        First Name:
-        <Input v-model="fname" />
+        First Name
+        <Input v-model="fname" @on-enter="handleSubmit" />
       </div>
 
       <div class="input">
-        Last Name:
-        <Input v-model="lname" />
+        Last Name
+        <Input v-model="lname" @on-enter="handleSubmit" />
       </div>
 
       <div class="input">
-        Username:
-        <Input v-model="username" />
+        Username
+        <Input v-model="username" @on-enter="handleSubmit" />
       </div>
 
       <div class="input">
@@ -46,8 +46,8 @@
             >
           </div>
         </div>
-        Email:
-        <Input v-model="email" />
+        Email
+        <Input v-model="email" @on-enter="handleSubmit" />
       </div>
       <div class="input">
         <div v-if="passNoMatchError">
@@ -59,20 +59,22 @@
             >Passwords do not match</Alert
           >
         </div>
-        Password:
+        Password
         <Input
           type="password"
           :icon="passMatch ? icon : null"
           v-model="pass1"
+          @on-enter="handleSubmit"
         />
       </div>
 
       <div class="input">
-        Confirm password:
+        Confirm password
         <Input
           type="password"
           :icon="passMatch ? icon : null"
           v-model="pass2"
+          @on-enter="handleSubmit"
         />
       </div>
 
@@ -85,6 +87,7 @@
 
 <script>
 import axios from "axios";
+axios.defaults.baseURL = "https://tradish-server.herokuapp.com";
 export default {
   data() {
     return {
@@ -182,6 +185,7 @@ export default {
   width: 500px;
   height: 100%;
   margin: 0 auto;
+  margin-top: 5%;
 }
 .input {
   width: 300px;

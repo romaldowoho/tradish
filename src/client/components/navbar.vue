@@ -1,47 +1,43 @@
 <template>
   <div>
-    <div class="wrap">
+    <div class="wrap" v-if="['home'].indexOf($route.name) === -1">
       <div class="logo" @click="goHome">
         <img class="image" src="./../../../public/tradish.png" />
       </div>
       <div class="search">
-        <searchBar v-if="['login','register','email','confirmed'].indexOf($route.name) === -1 " />
+        <searchBar
+          v-if="
+            ['login', 'register', 'email', 'confirmed'].indexOf($route.name) ===
+              -1
+          "
+        />
       </div>
-      <div class="total-balance" v-if="isLogged">
+      <div class="total-balance" v-if="isLogged == true">
         <div>
           <img class="coin" src="./../../../public/dollar.png" />
         </div>
-        <div class="balance">${{this.$store.state.user.balance | formatNumber}}</div>
+        <div class="balance">
+          ${{ this.$store.state.user.balance | formatNumber }}
+        </div>
       </div>
-      <div class="links-div" v-if="!this.$cookie.get('tradish-session')">
+      <div class="links-div" v-if="isLogged == false">
         <router-link class="link" to="/login">Log in</router-link>
         <router-link class="link" to="/register">Sign up</router-link>
       </div>
-      <!-- <div class="links-div" v-if="this.$cookie.get('tradish-session')">
-        <router-link class="link" to @click.native="logout">Log out</router-link>
-      </div>-->
+
       <div class="links-div" v-if="isLogged">
         <div class="link">
-          <Dropdown trigger="click">
-            <Icon size="30" type="md-menu"></Icon>
-            <DropdownMenu slot="list" style="padding: 0; font-weight: bold;">
-              <DropdownItem style="margin:0; font-weight: bolder; color: rgb(19, 189, 137);">
-                {{this.$store.getters.GET_USER.username}}
-                <Icon type="ios-arrow-forward" />
-              </DropdownItem>
-              <DropdownItem style="padding: 0; font-size: 30px; width: 100px;">
-                <!-- <Divider style="padding: 0; margin: 0; width: 100%;" /> -->
-              </DropdownItem>
-              <DropdownItem>Settings</DropdownItem>
-              <DropdownItem>
-                <router-link to="/history">History</router-link>
-              </DropdownItem>
-              <DropdownItem>About</DropdownItem>
-              <DropdownItem>
-                <router-link to @click.native="logout">Log out</router-link>
-              </DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
+          <Icon type="ios-menu-outline" size="30" @click="drawer = true" />
+          <Drawer class="drawer" v-model="drawer" :closable="false">
+            <CellGroup class="cellgroup">
+              <Cell @click="drawer = false" style="font-weight: bold;">{{
+                this.$store.getters.GET_USER.username
+              }}</Cell>
+              <Cell @click="drawer = false" to="/history">History</Cell>
+              <Cell @click="drawer = false" to="/settings">Settings</Cell>
+              <Cell @click.native="logout">Log out</Cell>
+            </CellGroup>
+          </Drawer>
         </div>
       </div>
     </div>
@@ -51,17 +47,27 @@
 <script>
 import searchBar from "./searchbar";
 import axios from "axios";
+axios.defaults.baseURL = "https://tradish-server.herokuapp.com";
 export default {
   name: "navbar",
   components: {
     searchBar
   },
   data() {
-    return {};
+    return {
+      drawer: false
+    };
   },
   computed: {
-    isLogged() {
-      return this.$cookie.get("tradish-session") ? 1 : 0;
+    isLogged: function() {
+      let token = this.$cookie.get("tradish-session");
+      return token ? true : false;
+      // return document.cookie.indexOf("tradish-session") !== -1;
+    }
+  },
+  watch: {
+    $route: function() {
+      // this.$router.go(0);
     }
   },
   methods: {
@@ -69,11 +75,12 @@ export default {
       this.$router.push({ name: "dashboard" });
     },
     logout() {
+      this.drawer = false;
       let token = this.$cookie.get("tradish-session");
       this.$cookie.delete("tradish-session");
 
       axios
-        .post("http://localhost:3000/api/logout", {
+        .post("/api/logout", {
           token: token
         })
         .then(res => {
@@ -118,6 +125,7 @@ export default {
 }
 .search {
   display: flex;
+  justify-content: center;
   width: 50%;
 }
 .links-div {

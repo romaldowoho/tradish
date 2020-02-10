@@ -2,11 +2,14 @@
   <div class="wrap">
     <div class="stock-info">
       <span class="price" v-if="loaded">
-        <h1>${{lastPrice | formatNumber}}</h1>
+        <h1>${{ lastPrice | formatNumber }}</h1>
       </span>
     </div>
     <div>
-      <Card style="height: 300px; width: 610px; backgroundColor: inherit;" dis-hover>
+      <Card
+        style="height: 300px; width: 610px; backgroundColor: inherit;"
+        dis-hover
+      >
         <div v-show="loaded">
           <canvas id="chartDashboard"></canvas>
         </div>
@@ -87,6 +90,7 @@ export default {
         let fiveMins = 30;
         if (timePassed > fiveMins) {
           let data = await IEX.getDayData(this);
+          if (!data) return;
           this.day_data.values = data.values;
           this.day_data.dates = data.dates;
           this.day_data.lastCall = new Date();
@@ -135,6 +139,7 @@ export default {
     async getChartData() {
       this.loaded = false;
       let data = await DB.getPortfolioHistory(this);
+      if (!data) return;
       this.$store.dispatch("SET_CHART_DATA", data);
       this.loaded = true;
     },

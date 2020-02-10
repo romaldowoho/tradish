@@ -5,7 +5,10 @@
         <Chart :symbol="symbol" @terminalInfo="setTerminalProp" />
       </div>
       <div class="terminal">
-        <Terminal :info="terminalInfo" v-if="Object.values(terminalInfo).length" />
+        <Terminal
+          :info="terminalInfo"
+          v-if="Object.values(terminalInfo).length"
+        />
       </div>
     </div>
     <div class="rest-row">
@@ -67,14 +70,15 @@ export default {
 .main-row {
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
 }
 .chart {
   display: flex;
   position: relative;
   justify-content: center;
-  width: 40%;
-  left: 8%;
+  width: 67%;
+  /* left: 8%; */
   margin-top: 5%;
 }
 .terminal {
@@ -82,7 +86,7 @@ export default {
   position: relative;
   justify-content: center;
   margin-top: 7%;
-  width: 40%;
+  width: 33%;
   right: 7%;
 }
 .rest-row {

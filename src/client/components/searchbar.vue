@@ -5,6 +5,7 @@
         class="selector"
         label="searchLabel"
         placeholder="Search"
+        :filterable="true"
         :options="companies"
         v-model="selected"
       ></v-select>
@@ -35,18 +36,32 @@ export default {
     selected: function(val) {
       if (val && val !== "Search") {
         this.selected = "Search";
-        this.$router.push(`/stocks/${val.symbol}`, () => {}, err => {});
+        this.$router.push(
+          `/stocks/${val.symbol}`,
+          () => {},
+          err => {}
+        );
       }
     }
   }
 };
 </script>
 
-<style scoped>
+<style>
 .searchBar {
-  width: 1000px;
+  width: 500px;
 }
-.selector {
-  background-color: rgba(241, 189, 167, 0.103);
+.selector .vs__search::placeholder {
+  text-transform: lowercase;
+  font-variant: small-caps;
+}
+.selector .vs__dropdown-toggle {
+  background: rgba(241, 189, 167, 0.103);
+}
+
+.selector .vs__dropdown-menu {
+  background: #fdf8f5;
+  text-transform: lowercase;
+  font-variant: small-caps;
 }
 </style>

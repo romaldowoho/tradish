@@ -1,7 +1,5 @@
-/* eslint-disable parser */
 import Vue from "vue";
 import Vuex from "vuex";
-import axios from "axios";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -48,13 +46,11 @@ export default new Vuex.Store({
       for (let i in payload) {
         state.user[i] = payload[i];
       }
-      console.log("USER UPDATED IN VUEX: ", state.user);
     },
     SET_TOTAL_EQUITY: (state, payload) => {
       state.totalEquity = payload;
     },
     SET_CHART_DATA: (state, payload) => {
-      console.log("chart data", payload);
       state.chart_data = payload;
     }
   },

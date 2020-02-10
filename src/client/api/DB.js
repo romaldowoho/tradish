@@ -1,9 +1,10 @@
 import axios from "axios";
+axios.defaults.baseURL = "https://tradish-server.herokuapp.com";
 
 export default {
   getUserInfo: async function(ctx) {
     await axios
-      .get("http://localhost:3000/api/getUser", {
+      .get("/api/getUser", {
         headers: {
           Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`
         }
@@ -21,9 +22,9 @@ export default {
   buyShares: async function(ctx, symbol, quantity, totalCost, doesOwn) {
     // loading bar start
     ctx.$Loading.start();
-    ///////////////////////////
+
     await axios
-      .post("http://localhost:3000/api/buyOrder", {
+      .post("/api/buyOrder", {
         Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
         symbol,
         quantity,
@@ -47,9 +48,9 @@ export default {
   sellShares: async function(ctx, symbol, quantity, totalCost) {
     // loading bar start
     ctx.$Loading.start();
-    ///////////////////////////
+
     await axios
-      .post("http://localhost:3000/api/sellOrder", {
+      .post("/api/sellOrder", {
         Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
         symbol,
         quantity,
@@ -71,7 +72,7 @@ export default {
   },
   handleWatchlist: function(ctx, symbol, action) {
     axios
-      .post("http://localhost:3000/api/handleWatchlist", {
+      .post("/api/handleWatchlist", {
         Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`,
         symbol,
         action
@@ -89,11 +90,10 @@ export default {
   getPortfolioHistory: async function(ctx) {
     let data;
     await axios
-      .post("http://localhost:3000/api/getHistory", {
+      .post("/api/getHistory", {
         Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`
       })
       .then(res => {
-        console.log(res.data.history);
         data = res.data.history;
       })
       .catch(err => {
@@ -105,7 +105,7 @@ export default {
   getTransactions: async function(ctx) {
     let transactions;
     await axios
-      .post("http://localhost:3000/api/getTransactions", {
+      .post("/api/getTransactions", {
         Authorization: `Bearer ${ctx.$cookie.get("tradish-session")}`
       })
       .then(res => {
