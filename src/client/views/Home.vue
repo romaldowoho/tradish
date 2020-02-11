@@ -10,110 +10,61 @@
         <img src="../../../public/illustr.svg" class="img" />
       </div>
     </div>
-    <!-- <div id="canvas"></div> -->
+    <div id="canvas"></div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 
-// import Particle from "../assets/particle";
 import NavbarHome from "../components/navbar-home";
 export default {
   name: "home",
   components: {
     NavbarHome
-  },
-  data() {
-    return {
-      particles: []
-    };
-  },
-  mounted() {
-    // const P5 = window.p5;
-    // new P5(this.p5);
-  },
-  methods: {
-    p5(sketch) {
-      sketch.setup = () => {
-        const canvas = sketch.createCanvas(window.innerWidth, 500);
-        canvas.parent("canvas");
-
-        const particlesLength = window.innerWidth < 500 ? 40 : 200;
-        for (let i = 0; i < particlesLength; i++) {
-          this.particles.push(new Particle(sketch));
-        }
-      };
-      sketch.draw = () => {
-        sketch.background("rgb(255, 255, 255)");
-
-        this.particles.forEach((particle, idx) => {
-          particle.update();
-          particle.draw();
-          let cols = [this.rc(), this.rc(), this.rc()];
-          particle.checkParticles(this.particles.slice(idx), cols);
-        });
-      };
-    },
-    rc() {
-      return Math.floor(Math.random() * 255);
-    }
   }
 };
 </script>
 
 <style>
 .home {
-  /* display: block; */
   background-color: white;
-  height: 750px;
+  height: 100vh;
+  width: 100vw;
 }
 .content-row {
-  margin-top: 50px;
+  margin-top: 10%;
   display: flex;
+  flex-wrap: wrap;
 }
 .img {
-  height: 350px;
-  width: 650px;
+  height: 100%;
+  width: 60%;
 }
 .content {
-  width: 720px;
+  width: 50%;
   font-size: 1.3em;
   vertical-align: center;
   padding-top: 12%;
 }
 .illustration {
-  position: relative;
-  width: 720px;
-  float: right;
-  top: 50px;
-  /* right: 100px; */
+  width: 50%;
+  justify-content: center;
 }
 
-@media (max-width: 411px) {
-  .home {
-    height: 823px;
-  }
+@media (max-width: 414px) {
   .content {
-    font-size: 1em;
+    font-size: .7em;
   }
-}
 
-@media (max-width: 1024px) {
-  .home {
-    height: 1024px;
-  }
-  .content-row {
-    flex-wrap: wrap;
-  }
-  .content .illustration {
+  .content {
     width: 100%;
-    margin: 0 auto;
-    font-size: 1.1em;
   }
-  .img {
-    height: 175px;
-    width: 325px;
+
+  .illustration {
+    margin-top: 20%;
+    width: 100%;
   }
+
 }
 </style>

@@ -10,7 +10,7 @@
         />
       </div>
       <div class="links">
-        <Button v-if="windowWidth() > 412" class="link btn" type="info"
+        <Button v-if="windowWidth() > 416" class="link btn" type="info"
           >Try Demo</Button
         >
         <Button class="link btn" size="large" to="/login">Log in</Button>
