@@ -1,78 +1,76 @@
 <template>
   <div class="portfolio-wrap">
-    <Card class="stocks" :padding="0">
-      <div>
-        <Menu
-          mode="horizontal"
-          @on-select="activateTab"
-          active-name="portfolio"
-          class="menu"
-        >
-          <MenuItem class="menu-item" name="portfolio">Portfolio</MenuItem>
-          <MenuItem class="menu-item" name="watchlist">Watchlist</MenuItem>
-        </Menu>
-      </div>
-      <div v-if="activeTab == 'portfolio'">
-        <div
-          v-for="symbol in portfolio"
-          :key="symbol.quote.symbol"
-          @click="handleClick(symbol.quote.symbol)"
-        >
-          <div class="cell">
-            <div class="cell-left">
-              <div class="cell-left-top">{{ symbol.quote.symbol }}</div>
-              <div class="cell-left-bottom">
-                {{ shareQuantity(symbol.quote.symbol) }}
-                {{ shareSpelling(shareQuantity(symbol.quote.symbol)) }}
+      <Card class="stocks" :padding="0">
+        <div>
+          <Menu
+            mode="horizontal"
+            @on-select="activateTab"
+            active-name="portfolio"
+            class="menu"
+          >
+            <MenuItem class="menu-item" name="portfolio">Portfolio</MenuItem>
+            <MenuItem class="menu-item" name="watchlist">Watchlist</MenuItem>
+          </Menu>
+        </div>
+        <div v-show="activeTab == 'portfolio'">
+          <div
+            v-for="symbol in portfolio"
+            :key="symbol.quote.symbol"
+            @click="handleClick(symbol.quote.symbol)"
+          >
+            <div class="cell">
+              <div class="cell-left">
+                <div class="cell-left-top">{{ symbol.quote.symbol }}</div>
+                <div class="cell-left-bottom">
+                  {{ shareQuantity(symbol.quote.symbol) }}
+                  {{ shareSpelling(shareQuantity(symbol.quote.symbol)) }}
+                </div>
+              </div>
+              <div class="chart-div">
+                  <ChartLight
+                    :id="symbol.quote.symbol"
+                    :symbol="symbol.quote.symbol"
+                  />
+              </div>
+              <div class="cell-right">
+                <div class="cell-right-top">${{ symbol.quote.latestPrice }}</div>
+                <div
+                  class="cell-right-bottom"
+                  :style="{ color: percentColor(symbol.quote.changePercent) }"
+                >
+                  {{ symbol.quote.changePercent | toFixed }}%
+                </div>
               </div>
             </div>
-            <div class="chart-div">
-              <keep-alive>
+          </div>
+        </div>
+        <div v-show="activeTab == 'watchlist'" class="watchlist">
+          <div
+            v-for="symbol in watchlist"
+            :key="symbol.quote.symbol"
+            @click="handleClick(symbol.quote.symbol)"
+          >
+            <div class="cell">
+              <div class="cell-left-watchlist">{{ symbol.quote.symbol }}</div>
+              <div class="chart-div">
                 <ChartLight
                   :id="symbol.quote.symbol"
                   :symbol="symbol.quote.symbol"
                 />
-              </keep-alive>
-            </div>
-            <div class="cell-right">
-              <div class="cell-right-top">${{ symbol.quote.latestPrice }}</div>
-              <div
-                class="cell-right-bottom"
-                :style="{ color: percentColor(symbol.quote.changePercent) }"
-              >
-                {{ symbol.quote.changePercent | toFixed }}%
+              </div>
+              <div class="cell-right">
+                <div class="cell-right-top">${{ symbol.quote.latestPrice }}</div>
+                <div
+                  class="cell-right-bottom"
+                  :style="{ color: percentColor(symbol.quote.changePercent) }"
+                >
+                  {{ symbol.quote.changePercent | toFixed }}%
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div v-if="activeTab == 'watchlist'" class="watchlist">
-        <div
-          v-for="symbol in watchlist"
-          :key="symbol.quote.symbol"
-          @click="handleClick(symbol.quote.symbol)"
-        >
-          <div class="cell">
-            <div class="cell-left-watchlist">{{ symbol.quote.symbol }}</div>
-            <div class="chart-div">
-              <ChartLight
-                :id="symbol.quote.symbol"
-                :symbol="symbol.quote.symbol"
-              />
-            </div>
-            <div class="cell-right">
-              <div class="cell-right-top">${{ symbol.quote.latestPrice }}</div>
-              <div
-                class="cell-right-bottom"
-                :style="{ color: percentColor(symbol.quote.changePercent) }"
-              >
-                {{ symbol.quote.changePercent | toFixed }}%
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Card>
+      </Card>
   </div>
 </template>
 
